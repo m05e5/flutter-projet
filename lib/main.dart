@@ -1,3 +1,4 @@
+import 'package:IUT_Project/screens/home.dart';
 import 'package:IUT_Project/screens/welcome.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,10 @@ class HomePage extends StatelessWidget {
         routes: {
           "/": (context)=>Scaffold(
             body: Welcome(),
-          )
+          ),
+          "home":(context)=>Scaffold(
+            body: Home(),
+          ),
         },
       ),
     );

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "864341016166",
+    "project_id": "soutenence",
+    "storage_bucket": "soutenence.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864341016166:android:ba37b9563ff72d9f7577a7",
+        "android_client_info": {
+          "package_name": "MOSES.IUT.IUT_Project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "864341016166-brkbptm4oo28lqv06g5ma9r42ngd6fbs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHt2drb2L9-JkZzBArOLVsJ4XudhyKHYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "864341016166-brkbptm4oo28lqv06g5ma9r42ngd6fbs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
