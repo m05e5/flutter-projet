@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
           "/": (context)=>Scaffold(
             body: Welcome(),
           ),
-          "home":(context)=>Scaffold(
+          "/home":(context)=>Scaffold(
             body: Home(),
           ),
         },

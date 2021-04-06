@@ -81,6 +81,9 @@ class _WelcomeState extends State<Welcome> {
           animationDuration: Duration(milliseconds:200),
           onTap: (index) {
             debugPrint("current index is $index");
+            if(index == 0){
+              Navigator.pushReplacementNamed(context, '/home');
+            }
 
           }),
     );
