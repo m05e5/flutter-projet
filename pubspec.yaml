@@ -28,6 +28,13 @@ dependencies:
   firebase_auth: ^0.20.0
   firebase_core: ^0.7.0
   cloud_firestore: ^0.16.0
+  random_string: ^2.1.0
+  firebase_storage: ^7.0.0
+  image_picker: ^0.6.7+22
+  popover: ^0.1.0
+  object_mapper: ^1.0.0+2
+  http: any
+  shared_preferences: any
   
   uuid: ^2.2.0 
 
