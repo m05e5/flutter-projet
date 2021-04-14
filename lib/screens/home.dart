@@ -1,9 +1,11 @@
+import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/services/crud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:object_mapper/object_mapper.dart';
 import 'package:popover/popover.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -11,6 +13,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+   SharedPreferences sharedPreferences;
+
+    @override
+  void initState() {
+     checkLoginState();
+    getPosts();
+    super.initState();
+  }
+
+  checkLoginState() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString('token') == null) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
   
   CrudMethods crudMethods = CrudMethods();
   List<Posts> posts = [];
@@ -94,17 +113,25 @@ class _HomeState extends State<Home> {
     return posts;
   }
 
-  @override
-  void initState() {
-    getPosts();
-    super.initState();
-  }
+
+   
+  
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[150],
+      appBar: AppBar(actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              sharedPreferences.clear();
+              sharedPreferences.commit();
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
+            },
+            child: Text("Log Out", style: TextStyle(color: Colors.white)),
+          ),
+        ],),
       body: Stack(
         children: [
           Positioned(
