@@ -1,4 +1,5 @@
 import 'package:IUT_Project/screens/login.dart';
+import 'package:IUT_Project/screens/postDetail.dart';
 import 'package:IUT_Project/services/crud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,12 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
    SharedPreferences sharedPreferences;
 
-    @override
-  void initState() {
-     checkLoginState();
-    getPosts();
-    super.initState();
-  }
+  
 
   checkLoginState() async {
     sharedPreferences = await SharedPreferences.getInstance();
@@ -30,7 +26,13 @@ class _HomeState extends State<Home> {
           (Route<dynamic> route) => false);
     }
   }
-  
+    @override
+  void initState() {
+    checkLoginState();
+   getPosts();
+    super.initState();
+     
+  }
   CrudMethods crudMethods = CrudMethods();
   List<Posts> posts = [];
 
@@ -104,10 +106,9 @@ class _HomeState extends State<Home> {
     CollectionReference ref =
         FirebaseFirestore.instance.collection(Posts.table_name);
     QuerySnapshot snapshot = await ref.get();
-    snapshot.docs.forEach((element) {
-      setState(() {
-        posts.add(Mapper.fromJson(element.data()).toObject<Posts>());
-      });
+    snapshot.docs.forEach((element){
+      setState(()=>posts.add(Mapper.fromJson(element.data()).toObject<Posts>())
+      );
     });
     print("===========================================${posts.toString()}");
     return posts;
@@ -122,18 +123,110 @@ class _HomeState extends State<Home> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[150],
-      appBar: AppBar(actions: <Widget>[
+      appBar: AppBar(
+         backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        actions: <Widget>[
           FlatButton(
             onPressed: () {
               sharedPreferences.clear();
               sharedPreferences.commit();
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => LoginPage()), (Route<dynamic> route) => false);
             },
-            child: Text("Log Out", style: TextStyle(color: Colors.white)),
+            child: Text("Log Out", style: TextStyle(color: Colors.black)),
           ),
         ],),
       body: Stack(
         children: [
+          Container(
+            height: size.height,
+            child:ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, i){
+                Posts post = posts[i];
+                return Column(
+                  children: <Widget>[
+                    Card(
+                      color: Colors.white,
+                      elevation: 1,
+                      child: FlatButton(
+                        padding: EdgeInsets.all(0),
+                        onPressed: ()
+                        => Navigator.of(context).push(new MaterialPageRoute(
+               // here we are passing the value of the product detail page
+                builder: (context) => new Post_Detail( 
+                  post_detail_id:post.id,
+                  post_detail_title:post.title ,
+                  post_detail_description:post.description,
+                  post_detail_imgUrl:post.imgUrl,
+                ))),
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          width: double.infinity,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              // Container(
+                              //   height: double.infinity,
+                              //   width: 120,
+                              //   decoration: BoxDecoration(
+                              //     borderRadius: BorderRadius.circular(10),
+                              //     image: DecorationImage(
+                              //       image: NetworkImage(post.imgUrl)
+                              //     ),
+                              //     border: Border.all(color: Colors.grey)
+                              //   ),
+                              // ),
+                              SizedBox(width: 10,),
+                              
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(height: 50,),
+                                  Text(post.title,
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[700]
+                                      )
+                                  ),
+                                  SizedBox(height: 4,),
+                                 
+                                  SizedBox(height: 4,),
+                                  Row(
+                                    children: <Widget>[
+                                      // Text('Avis: ', style: TextStyle(color: Colors.grey),),
+                                      Container(
+                                        width: size.width*0.9,
+                                        child: Text(post.description,
+                                        overflow: TextOverflow.ellipsis,
+                                         style: TextStyle(
+                                           color: Colors.grey,
+                                           fontSize: 15
+                                           ),
+                                         ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],  
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 2,)
+                  ],
+                 
+                );
+              }
+            )   ,
+            padding: EdgeInsets.only(bottom: 90),    
+               ),
+            
           Positioned(
               bottom: 0,
               left: 0,
@@ -170,7 +263,9 @@ class _HomeState extends State<Home> {
                                 Navigator.pushReplacementNamed(context, '/');
                               }),
                           IconButton(
-                              icon: Icon(Icons.search), onPressed: () {}),
+                              icon: Icon(Icons.search), onPressed: () {
+                             
+                              }),
                           Container(
                             width: size.width * 0.20,
                           ),

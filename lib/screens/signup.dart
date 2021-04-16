@@ -7,20 +7,18 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
-class LoginPage extends StatefulWidget {
-  static String tag = 'login-page';
+class SignUp extends StatefulWidget {
+
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpState extends State<SignUp> {
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
-    
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -39,38 +37,27 @@ class _LoginPageState extends State<LoginPage> {
                   headerSection(),
                   textSection(),
                   buttonSection(),
-                  register(),
                 ],
               ),
       ),
-
-      // backgroundColor: Colors.white,
-      // body: Center(
-      //   child: ListView(
-      //     shrinkWrap: true,
-      //     padding: EdgeInsets.only(left: 24.0, right: 24.0),
-      //     children: <Widget>[
-      //       logo,
-      //       SizedBox(height: 48.0),
-      //       email,
-      //       SizedBox(height: 8.0),
-      //       password,
-      //       SizedBox(height: 24.0),
-      //       loginButton,
-      //       forgotLabel
-      //     ],
-      //   ),
-      // ),
     );
   }
 
-  signIn(String matricule, pass) async {
+  register(String name, pseudo, email, matricule, pass, filiere) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map data = {'matricule': matricule, 'password': pass};
+    Map data = {
+      'name': name,
+      'pseudo': pseudo,
+      'email': email,
+      'matricule': matricule,
+      'password': pass,
+      'filiere': filiere
+    };
     var jsonResponse = null;
 
-    var response =
-        await http.post("http://192.168.1.36:8000/api/users/login", body: data);
+    var response = await http
+        .post("http://192.168.1.36:8000/api/users/register", body: data);
+
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
@@ -92,38 +79,98 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Container buttonSection() {
-    return Container(
+  Container buttonSection(){
+     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
         onPressed:
-            matriculeController.text == "" || passwordController.text == ""
+            nameController.text == "" ||
+           pseudoController.text == "" ||
+             matriculeController.text == "" ||
+             passwordController.text == ""  ||
+            filiereController.text == ""
                 ? null
                 : () {
                     setState(() {
                       _isLoading = true;
                     });
-                    signIn(matriculeController.text, passwordController.text);
+                    register(
+                      nameController.text,
+                      pseudoController.text,
+                      emailController.text,
+                      matriculeController.text,
+                      passwordController.text,
+                      filiereController.text,
+                    );
                   },
         elevation: 0.0,
         color: Colors.purple,
-        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
+        child: Text("Register", style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
 
+  final TextEditingController nameController = new TextEditingController();
+  final TextEditingController pseudoController = new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
   final TextEditingController matriculeController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController filiereController = new TextEditingController();
 
   Container textSection() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
       child: Column(
         children: <Widget>[
+             TextFormField(
+            controller: nameController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              icon: Icon(Icons.account_circle_rounded, color: Colors.white70),
+              hintText: "Name",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
+          SizedBox(height: 20.0),
+             TextFormField(
+            controller: pseudoController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              icon: Icon(Icons.account_circle_outlined, color: Colors.white70),
+              hintText: "Pseudo",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
+          SizedBox(height: 20.0),
+             TextFormField(
+            controller: emailController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              icon: Icon(Icons.email, color: Colors.white70),
+              hintText: "Email",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
+          SizedBox(height: 20.0),
           TextFormField(
             controller: matriculeController,
             cursorColor: Colors.white,
@@ -138,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
               hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 20.0),
           TextFormField(
             autofocus: false,
             controller: passwordController,
@@ -154,6 +201,21 @@ class _LoginPageState extends State<LoginPage> {
                   OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
             ),
           ),
+          SizedBox(height: 20.0),
+             TextFormField(
+            controller: filiereController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              icon: Icon(Icons.email, color: Colors.white70),
+              hintText: "Filiere",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
         ],
       ),
     );
@@ -163,24 +225,11 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       margin: EdgeInsets.only(top: 50.0),
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Login",
+      child: Text("Register",
           style: TextStyle(
               color: Colors.white70,
               fontSize: 40.0,
               fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Container register() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
-      margin: EdgeInsets.only(top: 25.0),
-      child: InkWell(
-        child: Text('I dont have an account yet'),
-        onTap: (){
-          Navigator.pushReplacementNamed(context, '/signup');
-        },
-      ),
     );
   }
 }

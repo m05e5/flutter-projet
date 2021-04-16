@@ -1,6 +1,7 @@
 import 'package:IUT_Project/screens/createPost.dart';
 import 'package:IUT_Project/screens/home.dart';
 import 'package:IUT_Project/screens/login.dart';
+import 'package:IUT_Project/screens/signup.dart';
 import 'package:IUT_Project/services/crud.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'package:IUT_Project/screens/welcome.dart';
@@ -44,6 +45,9 @@ class _MyAppState extends State<MyApp> {
               ),
           "/login": (context) => Scaffold(
                 body: LoginPage(),
+          ),
+          "/signup": (context) => Scaffold(
+                body: SignUp(),
           ),
           "/create": (context) => Scaffold(
                 body: CreatePost(),
