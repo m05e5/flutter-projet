@@ -20,11 +20,6 @@ class _HomeState extends State<Home> {
 
   checkLoginState() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString('token') == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
-    }
   }
     @override
   void initState() {
@@ -264,7 +259,7 @@ class _HomeState extends State<Home> {
                               }),
                           IconButton(
                               icon: Icon(Icons.search), onPressed: () {
-                             
+                                
                               }),
                           Container(
                             width: size.width * 0.20,

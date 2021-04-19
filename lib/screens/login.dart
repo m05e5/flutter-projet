@@ -19,16 +19,29 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
-    
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        leading: GestureDetector(
+            onTap: () {
+               setState(() {
+        _isLoading = false;
+      });
+            },
+            child: Icon(Icons.arrow_back_ios_rounded, color: Colors.black)),
+        centerTitle: true,
+        title: Text('Sign in', style: TextStyle(color: Colors.black)),
+        actions: [],
+      ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.blue, Colors.teal],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter),
-        ),
+        decoration: BoxDecoration(color: Colors.white
+            // gradient: LinearGradient(
+            //     colors: [Colors.blue, Colors.teal],
+            //     begin: Alignment.topCenter,
+            //     end: Alignment.bottomCenter),
+            ),
         child: _isLoading
             ? Center(
                 child: CircularProgressIndicator(
@@ -39,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                   headerSection(),
                   textSection(),
                   buttonSection(),
-                  register(),
+                  // register(),
                 ],
               ),
       ),
@@ -71,8 +84,13 @@ class _LoginPageState extends State<LoginPage> {
 
     var response =
         await http.post("http://192.168.1.36:8000/api/users/login", body: data);
+
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
+      Map userInfo = jsonResponse['data'];
+      print('------------------------');
+      print(userInfo);
+      print('------------------------');
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       if (jsonResponse != null) {
@@ -96,22 +114,29 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40.0,
-      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
+        focusElevation: 4.0,
+        highlightElevation: 4.0,
+        hoverElevation: 4.0,
         onPressed:
-            matriculeController.text == "" || passwordController.text == ""
-                ? null
-                : () {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    signIn(matriculeController.text, passwordController.text);
-                  },
-        elevation: 0.0,
-        color: Colors.purple,
-        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+            // matriculeController.text == "" || passwordController.text == ""
+            //     ? null
+            //     :
+            () {
+          setState(() {
+            _isLoading = true;
+          });
+          signIn(matriculeController.text, passwordController.text);
+        },
+        color: Colors.teal[300],
+        child: Text("Sign In",
+            style: TextStyle(
+              color: Colors.white70,
+            )),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
     );
   }
@@ -121,34 +146,38 @@ class _LoginPageState extends State<LoginPage> {
 
   Container textSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+      alignment: Alignment.center,
+      padding: EdgeInsets.fromLTRB(
+          20, MediaQuery.of(context).size.height * 0.18, 20, 20),
       child: Column(
         children: <Widget>[
           TextFormField(
             controller: matriculeController,
             cursorColor: Colors.white,
             // initialValue: '18i00933',
-            style: TextStyle(color: Colors.white70),
+            // style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.white70),
-              hintText: "Matricule",
+              labelText: 'Matricule',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: "Entrer votre matricule",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
               contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-              hintStyle: TextStyle(color: Colors.white70),
+              // hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
           SizedBox(height: 30.0),
           TextFormField(
             autofocus: false,
             controller: passwordController,
-            cursorColor: Colors.white,
+            cursorColor: Colors.black,
             //initialValue: '12345678',
             obscureText: true,
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.black),
             decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.white70),
-              hintText: "Password",
+              labelText: 'Password',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: "Entrer votre mot de passe",
               contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
@@ -161,13 +190,28 @@ class _LoginPageState extends State<LoginPage> {
 
   Container headerSection() {
     return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
       margin: EdgeInsets.only(top: 50.0),
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Text("Login",
-          style: TextStyle(
-              color: Colors.white70,
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold)),
+      // padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+      child: Column(
+        children: [
+          Text("Welcome",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 35.0,
+                  fontWeight: FontWeight.bold)),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Text(
+                "Pour vous loger vous avez besoin de votre matricule d'etudiant",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                )),
+          ),
+        ],
+      ),
     );
   }
 
@@ -177,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 25.0),
       child: InkWell(
         child: Text('I dont have an account yet'),
-        onTap: (){
+        onTap: () {
           Navigator.pushReplacementNamed(context, '/signup');
         },
       ),

@@ -2,6 +2,7 @@ import 'package:IUT_Project/screens/createPost.dart';
 import 'package:IUT_Project/screens/home.dart';
 import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/screens/signup.dart';
+import 'package:IUT_Project/screens/welcome.dart';
 import 'package:IUT_Project/services/crud.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'package:IUT_Project/screens/welcome.dart';
@@ -38,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: "/",
         routes: {
           "/": (context) => Scaffold(
-                body: Home(),
+                body: Welcome(),
               ),
           "/home": (context) => Scaffold(
                 body: Home(),

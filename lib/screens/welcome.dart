@@ -1,5 +1,8 @@
+import 'package:IUT_Project/screens/home.dart';
+import 'package:IUT_Project/screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -7,85 +10,41 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
-   int _page = 2;
-  GlobalKey _bottomNavigationKey = GlobalKey();
+  SharedPreferences sharedPreferences;
+
+  Future<Widget> checkLoginState() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if (sharedPreferences.getString('token') == null) {
+      await Future.delayed(const Duration(seconds: 10));
+      return  Future.value(new LoginPage());
+      //  new LoginPage();
+      // Navigator.pushReplacementNamed(context, '/login');
+      // Navigator.of(context).pushAndRemoveUntil(
+      //     MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+      //     (Route<dynamic> route) => false);
+    } else {
+      await Future.delayed(const Duration(seconds: 10));
+      return Future.value(new Home());
+      // new Home();
+      // Navigator.pushReplacementNamed(context, '/home');
+      // Navigator.of(context).pushAndRemoveUntil(
+      //     MaterialPageRoute(builder: (BuildContext context) => Home()),
+      // (Route<dynamic> route) => false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      
-      // body: Container(
-      //   color: Colors.grey[70],
-      //   height: MediaQuery.of(context).size.height,
-      //   width: MediaQuery.of(context).size.width,
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //       children: <Widget>[ Text("I'm a hero", style: TextStyle(color:Colors.black),), 
-           
-      //        ]),
-      // ),
-      body: Container(
-          color:Colors.grey[70],
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Text(_page.toString(), textScaleFactor: 10.0),
-                RaisedButton(
-                  child: Text('Go To Page of index 2'),
-                  onPressed: () {
-                    final CurvedNavigationBarState navBarState =
-                        _bottomNavigationKey.currentState;
-                    navBarState.setPage(2);
-                  },
-                )
-              ],
-            ),
-          ),
-          ),
-      bottomNavigationBar: CurvedNavigationBar( 
-        index: 2,
-        key: _bottomNavigationKey,
-        color: Colors.white,
-        backgroundColor: Colors.grey[70],
-        buttonBackgroundColor: Colors.orangeAccent[400],
-        height: 70,
-          items: <Widget>[
-            Icon(
-              Icons.search,
-              size: 20,
-              color: Colors.black,
-            ),
-              Icon(
-              Icons.data_usage_rounded,
-              size: 20,
-              color: Colors.black,
-            ),
-            Icon(
-              Icons.add,
-              size: 20,
-              color: Colors.black,
-            ),
-            Icon(
-              Icons.card_travel,
-              size: 20,
-              color: Colors.black,
-            ),
-             Icon(
-              Icons.list,
-              size: 20,
-              color: Colors.black,
-            ),
-             
-            
-          ],
-          animationCurve: Curves.bounceInOut,
-          animationDuration: Duration(milliseconds:200),
-          onTap: (index) {
-            debugPrint("current index is $index");
-            if(index == 0){
-              Navigator.pushReplacementNamed(context, '/home');
-            }
-
-          }),
+    return Container(
+      child: new SplashScreen(
+        
+          navigateAfterFuture: checkLoginState(),
+        //  title: new Text('Welcome In SplashScreen'),
+          image: Image.asset('assets/IUT2.png',fit: BoxFit.cover ),
+          backgroundColor: Colors.white,
+          styleTextUnderTheLoader: new TextStyle(),
+          photoSize: 50.0,
+          loaderColor: Colors.red),
     );
   }
 }
