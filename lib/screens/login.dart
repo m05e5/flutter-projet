@@ -26,9 +26,9 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
             onTap: () {
-               setState(() {
-        _isLoading = false;
-      });
+              setState(() {
+                _isLoading = false;
+              });
             },
             child: Icon(Icons.arrow_back_ios_rounded, color: Colors.black)),
         centerTitle: true,
@@ -82,8 +82,8 @@ class _LoginPageState extends State<LoginPage> {
     Map data = {'matricule': matricule, 'password': pass};
     var jsonResponse = null;
 
-    var response =
-        await http.post("http://192.168.1.36:8000/api/users/login", body: data);
+    var response = await http.post("http://192.168.1.101:8000/api/users/login",
+        body: data);
 
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
@@ -97,7 +97,8 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _isLoading = false;
         });
-        sharedPreferences.setString("token", jsonResponse['token']);
+        sharedPreferences.setString("token", "Bearer " + jsonResponse['token']);
+        
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => Home()),
             (Route<dynamic> route) => false);

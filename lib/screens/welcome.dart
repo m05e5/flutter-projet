@@ -15,7 +15,7 @@ class _WelcomeState extends State<Welcome> {
   Future<Widget> checkLoginState() async {
     sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getString('token') == null) {
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 5));
       return  Future.value(new LoginPage());
       //  new LoginPage();
       // Navigator.pushReplacementNamed(context, '/login');
@@ -23,7 +23,7 @@ class _WelcomeState extends State<Welcome> {
       //     MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
       //     (Route<dynamic> route) => false);
     } else {
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 5));
       return Future.value(new Home());
       // new Home();
       // Navigator.pushReplacementNamed(context, '/home');
