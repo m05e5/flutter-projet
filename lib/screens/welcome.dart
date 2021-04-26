@@ -14,7 +14,9 @@ class _WelcomeState extends State<Welcome> {
 
   Future<Widget> checkLoginState() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString('token') == null) {
+    final key = 'token';
+    final value = sharedPreferences.get(key) ?? 0;
+    if (value == 0) {
       await Future.delayed(const Duration(seconds: 5));
       return  Future.value(new LoginPage());
       //  new LoginPage();

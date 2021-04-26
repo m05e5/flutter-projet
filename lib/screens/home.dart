@@ -91,12 +91,13 @@ class _HomeState extends State<Home> {
     final value = prefs.get(key) ?? 0;
     print(value);
     final response = await http.get(
-      "http://192.168.1.101:8000/api/posts",
+      "http://192.168.1.36:8000/api/posts",
       headers: {'Accept': "application/json", 'Authorization': '$value'},
     );
 
     Map<String, dynamic> posts = json.decode(response.body);
     List<dynamic> data = posts["data"];
+    print("----------------- $data");
     return data;
   }
 
@@ -105,7 +106,8 @@ class _HomeState extends State<Home> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[150],
-      appBar: AppBar(
+      
+     /* appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: <Widget>[
@@ -121,7 +123,7 @@ class _HomeState extends State<Home> {
             child: Text("Log Out", style: TextStyle(color: Colors.black)),
           ),
         ],
-      ),
+      ),*/
       body: Stack(
         children: [
           Container(
@@ -306,36 +308,6 @@ class _HomeState extends State<Home> {
   }
 }
 
-// class PostTile extends StatelessWidget {
-//   String title, description, imgUrl, tags;
-//   PostTile(
-//       {@required this.title,
-//       @required this.description,
-//       @required this.imgUrl,
-//       @required this.tags});
-//   @override
-//   Widget build(BuildContext context) {
-//     Firebase.initializeApp();
-//     return Container(
-//       child: Stack(
-//         children: [
-//           Container(
-//             height: 150,
-//             decoration: BoxDecoration(
-//                 color: Colors.white, borderRadius: BorderRadius.circular(6)),
-//           ),
-//           Container(
-//               child: Column(
-//             children: [
-//               Text(title),
-//             ],
-//           ))
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class ItemList extends StatelessWidget {
   final List list;
 
@@ -344,17 +316,22 @@ class ItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    var fin = list.length - 1;
-    print(fin);
+    var fin = list.length;
+
     return Scrollbar(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: new ListView.builder(
             itemCount: list == null ? 0 : list.length,
             itemBuilder: (context, i) {
+              // print(list[i]);
+              // print(fin);
               return Column(
                 children: [
                   Card(
+                    margin: list[i]['id'] == fin
+                        ? EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 90.0)
+                        : EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
                     color: Colors.white,
                     elevation: 1,
                     child: FlatButton(
@@ -402,7 +379,7 @@ class ItemList extends StatelessWidget {
                                           height: 40,
                                           width: 40,
                                           decoration: BoxDecoration(
-                                              color: Colors.orange,
+                                              color: Colors.grey,
                                               borderRadius:
                                                   BorderRadius.circular(25)),
                                           child: Text(list[i]['user']['name'][0]
@@ -442,7 +419,6 @@ class ItemList extends StatelessWidget {
                           ),
                         )),
                   ),
-                 
                   list[i] == fin
                       ? SizedBox(
                           height: 160,

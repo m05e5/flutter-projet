@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://192.168.1.101:8000/api";
-  String serverUrlPosts = "http://192.168.1.101:8000/api/posts";
+  String serverUrl = "http://192.168.1.36:8000/api";
+  String serverUrlPosts = "http://192.168.1.36:8000/api/posts";
 
   var status;
 
@@ -32,16 +32,16 @@ class DataBaseHelper {
   void createPost(
     String titleController,
     String descriptionController,
-    String imgUrlController,
+    [String imgUrlController] // the square bracets is to say that the imgUrl is optional
   ) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
     final value = prefs.get(key) ?? 0;
-
-    String myUrl = "$serverUrl/posts/create";
-    final response = await http.post(myUrl, headers: {
+    print("-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-* $value");
+    //String myUrl = "http://192.168.1.36:8000/api/posts/create";
+    final response = await http.post("http://192.168.1.36:8000/api/posts/create", headers: {
       'Accept': "application/json",
-      'Authorization': 'Bearer $value'
+      'Authorization': '$value'
     }, body: {
       "title": "$titleController",
       "description": "$descriptionController",
@@ -56,7 +56,6 @@ class DataBaseHelper {
       print('data : ${data["error"]}');
     } else {
       print('data : ${data["token"]}');
-      _save(data["token"]);
     }
   }
 

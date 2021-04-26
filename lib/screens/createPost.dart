@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:IUT_Project/services/crud.dart';
+import 'package:IUT_Project/services/databasehelper.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,16 +47,19 @@ class _CreatePostState extends State<CreatePost> {
         var downloadUrl = await (await task).ref.getDownloadURL();
         print("this is url $downloadUrl");
 
-        Map<String, String> postMap = {
-          "imgUrl": downloadUrl,
-          "title": title,
-          "desc": desc
-        };
+        // Map<String, String> postMap = {
+        //   "imgUrl": downloadUrl,
+        //   "title": title,
+        //   "desc": desc
+        // };
+        databaseHelper.createPost(titleController.text.trim(),
+            descriptionController.text.trim(), downloadUrl);
+        Navigator.pushReplacementNamed(context, '/home');
+        print("$titleController---- $descriptionController ------- $downloadUrl");
 
-        crudMethods.addData(postMap).then((result) {
-            Navigator.pushReplacementNamed(context, '/');   
-        });
-        
+        // crudMethods.addData(postMap).then((result) {
+        //   Navigator.pushReplacementNamed(context, '/');
+        // });
       } catch (e) {
         print(e);
       }
@@ -68,6 +72,11 @@ class _CreatePostState extends State<CreatePost> {
     }
   }
 
+  DataBaseHelper databaseHelper = new DataBaseHelper();
+
+  final TextEditingController titleController = new TextEditingController();
+  final TextEditingController descriptionController =
+      new TextEditingController();
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -162,6 +171,7 @@ class _CreatePostState extends State<CreatePost> {
                       child: Column(
                         children: [
                           TextField(
+                            controller: titleController,
                             decoration: InputDecoration(
                               labelText: "Title",
                             ),
@@ -173,6 +183,7 @@ class _CreatePostState extends State<CreatePost> {
                             height: 8,
                           ),
                           TextFormField(
+                            controller: descriptionController,
                             decoration: InputDecoration(
                               hintText: "desc",
                               border: OutlineInputBorder(),
