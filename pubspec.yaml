@@ -36,6 +36,7 @@ dependencies:
   http: any
   shared_preferences: any
   splashscreen: ^1.3.5
+  material_floating_search_bar: ^0.2.6
   
   uuid: ^2.2.0 
 

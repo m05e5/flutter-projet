@@ -105,9 +105,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.grey[150],
-      
-     /* appBar: AppBar(
+      backgroundColor: Colors.grey[200],
+      /*appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: <Widget>[
@@ -248,14 +247,14 @@ class _HomeState extends State<Home> {
                       painter: BNBCustomePainter(),
                     ),
                     Center(
-                      heightFactor: 0.6,
+                      heightFactor: 0.7,
                       child: FloatingActionButton(
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, '/create');
                         },
-                        backgroundColor: Colors.orange,
+                        backgroundColor: Colors.teal[300],
                         child: Icon(Icons.edit),
-                        elevation: 0.1,
+                        elevation: 1,
                       ),
                     ),
                     Container(
@@ -317,21 +316,22 @@ class ItemList extends StatelessWidget {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     var fin = list.length;
-
+    int num = 0;
     return Scrollbar(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: new ListView.builder(
             itemCount: list == null ? 0 : list.length,
             itemBuilder: (context, i) {
+              num += 1;
               // print(list[i]);
               // print(fin);
               return Column(
                 children: [
                   Card(
-                    margin: list[i]['id'] == fin
-                        ? EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 90.0)
-                        : EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 5.0),
+                    margin: num == fin
+                        ? EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 85.0)
+                        : EdgeInsets.fromLTRB(4.0, 0.0, 4.0, 5.0),
                     color: Colors.white,
                     elevation: 1,
                     child: FlatButton(
@@ -348,49 +348,67 @@ class ItemList extends StatelessWidget {
                                           list[i]['imgUrl'].toString(),
                                     ))),
                         child: Container(
-                          padding: EdgeInsets.all(4),
-                          width: double.infinity,
-                          height: 170,
+                          padding: EdgeInsets.fromLTRB(6, 15, 0, 18),
+                          //height: 170,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10)),
-                          child: Row(
+                          child: Stack(
                             children: [
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Text(list[i]['user']['name']
-                                              .toString()),
-                                          Text(list[i]['created_at']
-                                              .toString()
-                                              .substring(0, 10)),
-                                        ],
-                                      ),
-                                      Container(
+                              list[i]['user']['imgProfile'] == null
+                                  ? Positioned(
+                                      right: 0,
+                                      child: Container(
                                           alignment: Alignment.center,
                                           margin: EdgeInsets.symmetric(
                                               horizontal: 16),
                                           height: 40,
                                           width: 40,
                                           decoration: BoxDecoration(
-                                              color: Colors.grey,
+                                              color: Colors.teal[300],
                                               borderRadius:
                                                   BorderRadius.circular(25)),
                                           child: Text(list[i]['user']['name'][0]
                                               .toString())),
+                                    )
+                                  : Positioned(
+                                      right: 0,
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.teal[300],
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                        ),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            child: Image.network(
+                                              list[i]['user']['imgProfile'],
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
+                                    ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(list[i]['user']['name'].toString()),
+                                      Text(list[i]['created_at']
+                                          .toString()
+                                          .substring(0, 10)),
                                     ],
                                   ),
+                                  //SizedBox(width: size.width * 0.43),
+
                                   SizedBox(
-                                    height: 2,
+                                    height: 5,
                                   ),
                                   Container(
-                                    width: size.width * 0.85,
+                                    width: size.width * 0.87,
                                     child: Text(list[i]['title'].toString(),
                                         style: TextStyle(
                                             fontSize: 20,
@@ -403,14 +421,40 @@ class ItemList extends StatelessWidget {
                                   Row(
                                     children: [
                                       Container(
-                                        width: size.width * 0.85,
-                                        child: Text(
-                                          list[i]['description'].toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 15),
-                                        ),
-                                      )
+                                          height: 40,
+                                          width: size.width * 0.85,
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: list[i]['tags'].length,
+                                              itemBuilder: (context, j) {
+                                                return Container(
+                                                    alignment: Alignment.center,
+                                                    margin:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 6),
+                                                      padding:EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.grey[200],
+                                                        borderRadius:
+                                                            BorderRadius.circular(15)),
+                                                    child: Text(
+                                                  list[i]['tags'][j]['name']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 15),
+                                                ));
+
+                                                /* Text(
+                                                  list[i]['tags'][j]['name']
+                                                      .toString(),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 15),
+                                                );*/
+                                              }))
                                     ],
                                   )
                                 ],
@@ -549,12 +593,12 @@ class BNBCustomePainter extends CustomPainter {
       ..color = Colors.white
       ..style = PaintingStyle.fill;
     Path path = Path()..moveTo(0, 20);
-    path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
+    path.quadraticBezierTo(size.width * 0.20, 00, size.width * 0.35, 0);
     path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
     path.arcToPoint(Offset(size.width * 0.60, 20),
         radius: Radius.circular(10.0), clockwise: false);
     path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
-    path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
+    path.quadraticBezierTo(size.width * 0.80, 00, size.width, 20);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     path.close();
