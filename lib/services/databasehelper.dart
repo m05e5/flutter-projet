@@ -37,7 +37,7 @@ class DataBaseHelper {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
     final value = prefs.get(key) ?? 0;
-    print("-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-* $value");
+    print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
     //String myUrl = "http://192.168.1.36:8000/api/posts/create";
     final response = await http.post("http://192.168.1.36:8000/api/posts/create", headers: {
       'Accept': "application/json",

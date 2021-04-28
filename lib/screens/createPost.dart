@@ -67,6 +67,10 @@ class _CreatePostState extends State<CreatePost> {
       ///uploading image to firebase storage
 
     } else {
+      databaseHelper.createPost(titleController.text.trim(),
+            descriptionController.text.trim());
+        Navigator.pushReplacementNamed(context, '/home');
+        print("$titleController---- $descriptionController");
       print(
           "******************************************************************3");
     }

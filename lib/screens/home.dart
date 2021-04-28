@@ -346,6 +346,10 @@ class ItemList extends StatelessWidget {
                                           list[i]['description'].toString(),
                                       post_detail_imgUrl:
                                           list[i]['imgUrl'].toString(),
+                                      post_detail_tags:
+                                          list[i]['tags'],
+                                      post_detail_user:
+                                          list[i]['user']
                                     ))),
                         child: Container(
                           padding: EdgeInsets.fromLTRB(6, 15, 0, 18),
@@ -357,6 +361,7 @@ class ItemList extends StatelessWidget {
                               list[i]['user']['imgProfile'] == null
                                   ? Positioned(
                                       right: 0,
+                                      top: 0,
                                       child: Container(
                                           alignment: Alignment.center,
                                           margin: EdgeInsets.symmetric(
@@ -372,13 +377,14 @@ class ItemList extends StatelessWidget {
                                     )
                                   : Positioned(
                                       right: 0,
+                                      top: 0,
                                       child: Container(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 16),
                                         height: 40,
                                         width: 40,
                                         decoration: BoxDecoration(
-                                          color: Colors.teal[300],
+                                          color: Colors.grey[400],
                                           borderRadius:
                                               BorderRadius.circular(25),
                                         ),
@@ -397,18 +403,24 @@ class ItemList extends StatelessWidget {
                                   Column(
                                     children: [
                                       Text(list[i]['user']['name'].toString()),
-                                      Text(list[i]['created_at']
-                                          .toString()
-                                          .substring(0, 10)),
+                                      Text(
+                                        list[i]['created_at']
+                                            .toString()
+                                            .substring(0, 10),
+                                        style: TextStyle(
+                                            color: Colors.black, 
+                                            fontSize: 10
+                                            ),
+                                      ),
                                     ],
                                   ),
                                   //SizedBox(width: size.width * 0.43),
 
                                   SizedBox(
-                                    height: 5,
+                                    height: 15,
                                   ),
                                   Container(
-                                    width: size.width * 0.87,
+                                   // width: size.width * 0.87,
                                     child: Text(list[i]['title'].toString(),
                                         style: TextStyle(
                                             fontSize: 20,
@@ -421,7 +433,7 @@ class ItemList extends StatelessWidget {
                                   Row(
                                     children: [
                                       Container(
-                                          height: 40,
+                                          height: 20,
                                           width: size.width * 0.85,
                                           child: ListView.builder(
                                               scrollDirection: Axis.horizontal,
@@ -432,18 +444,22 @@ class ItemList extends StatelessWidget {
                                                     margin:
                                                         EdgeInsets.symmetric(
                                                             horizontal: 6),
-                                                      padding:EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 5,
+                                                            vertical: 0),
                                                     decoration: BoxDecoration(
                                                         color: Colors.grey[200],
                                                         borderRadius:
-                                                            BorderRadius.circular(15)),
+                                                            BorderRadius
+                                                                .circular(15)),
                                                     child: Text(
-                                                  list[i]['tags'][j]['name']
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15),
-                                                ));
+                                                      list[i]['tags'][j]['name']
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 13),
+                                                    ));
 
                                                 /* Text(
                                                   list[i]['tags'][j]['name']
