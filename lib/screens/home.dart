@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/screens/postDetail.dart';
 import 'package:IUT_Project/services/crud.dart';
+import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     checkLoginState();
-    this.getPosts();
+    this.databaseHelper.getPost();
+    //this.getPosts();
     super.initState();
   }
 
@@ -84,7 +86,7 @@ class _HomeState extends State<Home> {
   //   print("===========================================${posts.toString()}");
   //   return posts;
   // }
-
+  DataBaseHelper databaseHelper = new DataBaseHelper();
   Future<List> getPosts() async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
@@ -127,9 +129,8 @@ class _HomeState extends State<Home> {
         children: [
           Container(
             height: size.height,
-
             child: new FutureBuilder(
-                future: getPosts(),
+                future: databaseHelper.getPost(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) print(snapshot.error);
                   return snapshot.hasData
@@ -138,100 +139,6 @@ class _HomeState extends State<Home> {
                         )
                       : new Center(child: new CircularProgressIndicator());
                 }),
-
-            // child: ListView.builder(
-            //     itemCount: posts.length,
-            //     itemBuilder: (context, i) {
-            //       Posts post = posts[i];
-            //       return Column(
-            //         children: <Widget>[
-            //           Card(
-            //             color: Colors.white,
-            //             elevation: 1,
-            //             child: FlatButton(
-            //               padding: EdgeInsets.all(0),
-            //               onPressed: () =>
-            //                   Navigator.of(context).push(new MaterialPageRoute(
-            //                       // here we are passing the value of the product detail page
-            //                       builder: (context) => new Post_Detail(
-            //                             post_detail_id: post.id,
-            //                             post_detail_title: post.title,
-            //                             post_detail_description:
-            //                                 post.description,
-            //                             post_detail_imgUrl: post.imgUrl,
-            //                           ))),
-            //               child: Container(
-            //                 padding: EdgeInsets.all(8),
-            //                 width: double.infinity,
-            //                 height: 150,
-            //                 decoration: BoxDecoration(
-            //                     borderRadius: BorderRadius.circular(10)),
-            //                 child: Row(
-            //                   children: <Widget>[
-            //                     // Container(
-            //                     //   height: double.infinity,
-            //                     //   width: 120,
-            //                     //   decoration: BoxDecoration(
-            //                     //     borderRadius: BorderRadius.circular(10),
-            //                     //     image: DecorationImage(
-            //                     //       image: NetworkImage(post.imgUrl)
-            //                     //     ),
-            //                     //     border: Border.all(color: Colors.grey)
-            //                     //   ),
-            //                     // ),
-            //                     SizedBox(
-            //                       width: 10,
-            //                     ),
-
-            //                     Column(
-            //                       crossAxisAlignment: CrossAxisAlignment.start,
-            //                       children: <Widget>[
-            //                         SizedBox(
-            //                           height: 50,
-            //                         ),
-            //                         Text(post.title,
-            //                             style: TextStyle(
-            //                                 fontSize: 30,
-            //                                 fontWeight: FontWeight.bold,
-            //                                 color: Colors.grey[700])),
-            //                         SizedBox(
-            //                           height: 4,
-            //                         ),
-            //                         SizedBox(
-            //                           height: 4,
-            //                         ),
-            //                         Row(
-            //                           children: <Widget>[
-            //                             // Text('Avis: ', style: TextStyle(color: Colors.grey),),
-            //                             Container(
-            //                               width: size.width * 0.9,
-            //                               child: Text(
-            //                                 post.description,
-            //                                 overflow: TextOverflow.ellipsis,
-            //                                 style: TextStyle(
-            //                                     color: Colors.grey,
-            //                                     fontSize: 15),
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         )
-            //                       ],
-            //                     )
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //           SizedBox(
-            //             height: 2,
-            //           )
-            //         ],
-            //       );
-            //     }),
-            //
-            //
-
-            // padding: EdgeInsets.only(bottom: 90),
           ),
           Positioned(
               bottom: 0,
@@ -294,7 +201,9 @@ class _HomeState extends State<Home> {
                           IconButton(
                               // color:Colors.white,
                               icon: Icon(Icons.notifications),
-                              onPressed: () {}),
+                              onPressed: () {
+                                Navigator.pushReplacementNamed(context, '/profilePage');
+                              }),
                         ],
                       ),
                     )
@@ -306,6 +215,14 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+//
+//
+//
+//
+//
+//
+//
 
 class ItemList extends StatelessWidget {
   final List list;
@@ -335,22 +252,19 @@ class ItemList extends StatelessWidget {
                     color: Colors.white,
                     elevation: 1,
                     child: FlatButton(
-                        onPressed: () =>
-                            Navigator.of(context).push(new MaterialPageRoute(
+                        onPressed: () => Navigator.of(context).push(
+                            new MaterialPageRoute(
                                 // here we are passing the value of the product detail page
                                 builder: (context) => new Post_Detail(
-                                      post_detail_id: list[i]['id'],
-                                      post_detail_title:
-                                          list[i]['title'].toString(),
-                                      post_detail_description:
-                                          list[i]['description'].toString(),
-                                      post_detail_imgUrl:
-                                          list[i]['imgUrl'].toString(),
-                                      post_detail_tags:
-                                          list[i]['tags'],
-                                      post_detail_user:
-                                          list[i]['user']
-                                    ))),
+                                    post_detail_id: list[i]['id'],
+                                    post_detail_title:
+                                        list[i]['title'].toString(),
+                                    post_detail_description:
+                                        list[i]['description'].toString(),
+                                    post_detail_imgUrl:
+                                        list[i]['imgUrl'].toString(),
+                                    post_detail_tags: list[i]['tags'],
+                                    post_detail_user: list[i]['user']))),
                         child: Container(
                           padding: EdgeInsets.fromLTRB(6, 15, 0, 18),
                           //height: 170,
@@ -408,9 +322,7 @@ class ItemList extends StatelessWidget {
                                             .toString()
                                             .substring(0, 10),
                                         style: TextStyle(
-                                            color: Colors.black, 
-                                            fontSize: 10
-                                            ),
+                                            color: Colors.black, fontSize: 10),
                                       ),
                                     ],
                                   ),
@@ -420,7 +332,7 @@ class ItemList extends StatelessWidget {
                                     height: 15,
                                   ),
                                   Container(
-                                   // width: size.width * 0.87,
+                                    // width: size.width * 0.87,
                                     child: Text(list[i]['title'].toString(),
                                         style: TextStyle(
                                             fontSize: 20,
@@ -430,49 +342,38 @@ class ItemList extends StatelessWidget {
                                   SizedBox(
                                     height: 8,
                                   ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                          height: 20,
-                                          width: size.width * 0.85,
-                                          child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: list[i]['tags'].length,
-                                              itemBuilder: (context, j) {
-                                                return Container(
-                                                    alignment: Alignment.center,
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 6),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 5,
-                                                            vertical: 0),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.grey[200],
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15)),
-                                                    child: Text(
-                                                      list[i]['tags'][j]['name']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 13),
-                                                    ));
-
-                                                /* Text(
+                                  // Row(
+                                  //   children: [
+                                  Container(
+                                      height: 25,
+                                      width: size.width * 0.85,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: list[i]['tags'].length,
+                                          itemBuilder: (context, j) {
+                                            return Container(
+                                                alignment: Alignment.center,
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 6),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5, vertical: 3),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.grey[200],
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)),
+                                                child: Text(
                                                   list[i]['tags'][j]['name']
                                                       .toString(),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 15),
-                                                );*/
-                                              }))
-                                    ],
-                                  )
+                                                      color: Colors.black,
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ));
+                                          }))
+                                  //   ],
+                                  // )
                                 ],
                               )
                             ],
@@ -487,85 +388,21 @@ class ItemList extends StatelessWidget {
                           height: 1,
                         )
                 ],
-              );
-              // return new Container(
-              //     child: new GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     new MaterialPageRoute(
-              //         // here we are passing the value of the product detail page
-              //         builder: (context) => new Post_Detail(
-              //               post_detail_id: list[i]['id'],
-              //               post_detail_title: list[i]['title'].toString(),
-              //               post_detail_description:
-              //                   list[i]['description'].toString(),
-              //               post_detail_imgUrl: list[i]['imgUrl'].toString(),
-              //             )),
-              //   ),
-              //   child: Container(
-              //     padding: EdgeInsets.all(8),
-              //     width: double.infinity,
-              //     height: 150,
-              //     decoration:
-              //         BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              //     child: Row(
-              //       children: <Widget>[
-              //         // Container(
-              //         //   height: double.infinity,
-              //         //   width: 120,
-              //         //   decoration: BoxDecoration(
-              //         //     borderRadius: BorderRadius.circular(10),
-              //         //     image: DecorationImage(
-              //         //       image: NetworkImage(post.imgUrl)
-              //         //     ),
-              //         //     border: Border.all(color: Colors.grey)
-              //         //   ),
-              //         // ),
-              //         SizedBox(
-              //           width: 10,
-              //         ),
-
-              //         Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: <Widget>[
-              //             SizedBox(
-              //               height: 50,
-              //             ),
-              //             Text(list[i]['title'].toString(),
-              //                 style: TextStyle(
-              //                     fontSize: 30,
-              //                     fontWeight: FontWeight.bold,
-              //                     color: Colors.grey[700])),
-              //             SizedBox(
-              //               height: 4,
-              //             ),
-              //             SizedBox(
-              //               height: 4,
-              //             ),
-              //             Row(
-              //               children: <Widget>[
-              //                 // Text('Avis: ', style: TextStyle(color: Colors.grey),),
-              //                 Container(
-              //                   width: size.width * 0.9,
-              //                   child: Text(
-              //                     list[i]['description'].toString(),
-              //                     overflow: TextOverflow.ellipsis,
-              //                     style: TextStyle(
-              //                         color: Colors.grey, fontSize: 15),
-              //                   ),
-              //                 ),
-              //               ],
-              //             )
-              //           ],
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ));
+              );  
             }),
       ),
     );
   }
 }
+
+//
+//
+//
+//
+//
+//
+//
+//
 
 class ListItems extends StatelessWidget {
   const ListItems({Key key}) : super(key: key);

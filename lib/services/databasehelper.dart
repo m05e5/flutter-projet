@@ -29,17 +29,17 @@ class DataBaseHelper {
     }
   }
 
-  void createPost(
-    String titleController,
-    String descriptionController,
-    [String imgUrlController] // the square bracets is to say that the imgUrl is optional
-  ) async {
+  void createPost(String titleController, String descriptionController,
+      [String
+          imgUrlController] // the square bracets is to say that the imgUrl is optional
+      ) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
     final value = prefs.get(key) ?? 0;
     print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
     //String myUrl = "http://192.168.1.36:8000/api/posts/create";
-    final response = await http.post("http://192.168.1.36:8000/api/posts/create", headers: {
+    final response =
+        await http.post("http://192.168.1.36:8000/api/posts/create", headers: {
       'Accept': "application/json",
       'Authorization': '$value'
     }, body: {
@@ -72,7 +72,7 @@ class DataBaseHelper {
     String myUrl = "$serverUrl/posts/update/$id";
     http.put(myUrl, headers: {
       'Accept': "application/json",
-      'Authorization': 'Bearer $value'
+      'Authorization': '$value'
     }, body: {
       "title": "$title",
       "description": "$description",
@@ -91,7 +91,7 @@ class DataBaseHelper {
     String myUrl = "$serverUrl/posts/delete/$id";
     http.delete(myUrl, headers: {
       'Accept': "application/json",
-      'Authorization': 'Bearer $value'
+      'Authorization': '$value'
     }).then((response) {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -104,12 +104,26 @@ class DataBaseHelper {
     final value = prefs.get(key) ?? 0;
 
     String myUrl = "$serverUrlPosts";
-    http.Response response = await http.get(myUrl, headers: {
-      'Accept': "application/json",
-      'Authorization': 'Bearer $value'
-    });
+    http.Response response = await http.get(myUrl,
+        headers: {'Accept': "application/json", 'Authorization': '$value'});
 
-    return json.decode(response.body);
+    Map<String, dynamic> posts = json.decode(response.body);
+    List<dynamic> data = posts["data"];
+    return data;
+  }
+
+  Future<List> getCommentsPerPosts(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+
+    String myUrl = "$serverUrl/comments/onPost/$id";
+    http.Response response = await http.get(myUrl,
+        headers: {'Accept': "application/json", 'Authorization': '$value'});
+
+     Map<String, dynamic> posts = json.decode(response.body);
+    List<dynamic> data = posts["data"];
+    return data;
   }
 
   _save(String token) async {

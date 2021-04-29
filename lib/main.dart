@@ -1,3 +1,4 @@
+import 'package:IUT_Project/screens/ProfilePage.dart';
 import 'package:IUT_Project/screens/createPost.dart';
 import 'package:IUT_Project/screens/home.dart';
 import 'package:IUT_Project/screens/login.dart';
@@ -53,6 +54,10 @@ class _MyAppState extends State<MyApp> {
           "/create": (context) => Scaffold(
                 body: CreatePost(),
               ),
+           "/profilePage": (context) => Scaffold(
+                body: ProfilePage(),
+              ),
+              
         },
       ),
     );

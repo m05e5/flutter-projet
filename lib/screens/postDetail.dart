@@ -1,3 +1,4 @@
+import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:object_mapper/object_mapper.dart';
@@ -34,16 +35,32 @@ class _Post_DetailState extends State<Post_Detail>
 
     super.initState();
   }
-
+  DataBaseHelper databaseHelper = new DataBaseHelper();
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    //print("---------------------------------------------------------------------****************************${widget.post_detail_imgUrl}");
+    final imgval = widget.post_detail_imgUrl.toString();
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
+        iconTheme: IconThemeData.fallback(),
         backgroundColor: Colors.grey[200],
         elevation: 0,
         centerTitle: true,
-        title: Text('Hello world', style: TextStyle(color:Colors.black),),
+        title: Container(
+          child: Row(children: [
+            Image.asset(
+              'assets/IUT2.png',
+              fit: BoxFit.cover,
+              width: 25,
+              height: 25,
+            ),
+            Text(
+              'GoAsk',
+              style: TextStyle(color: Colors.black),
+            )
+          ]),
+        ),
         actions: [],
         leading: null,
       ),
@@ -56,17 +73,40 @@ class _Post_DetailState extends State<Post_Detail>
             ),
             Text(widget.post_detail_title,
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 23,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[700])),
+                    color: Colors.grey[800])),
             SizedBox(
               height: 10,
             ),
+            Row(
+              children: [],
+            ),
+            Divider(),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(15)),
+              padding: EdgeInsets.symmetric(
+                horizontal: 9,
+                vertical: 9,
+              ),
+              child: Text(widget.post_detail_description),
+            ),
+            SizedBox(
+              height: 30,
+            ),
             GestureDetector(
-              child: widget.post_detail_imgUrl != null
+              child: imgval != 'null'
                   ? Container(
+                    
                       height: 200,
                       width: size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      
                       margin: EdgeInsets.symmetric(horizontal: 6),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
@@ -75,7 +115,9 @@ class _Post_DetailState extends State<Post_Detail>
                             fit: BoxFit.cover,
                           )),
                     )
-                  : Container(
+                  : SizedBox(
+                      height: 1,
+                    ), /*Container(
                       margin: EdgeInsets.symmetric(horizontal: 6),
                       height: 200,
                       decoration: BoxDecoration(
@@ -85,48 +127,37 @@ class _Post_DetailState extends State<Post_Detail>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [Text('No pic for this post')],
-                      )),
+                      )),*/
             ),
             SizedBox(
               height: 10,
             ),
-            Text(widget.post_detail_description),
+            Row(
+              children: [
+                Container(
+                    height: 25,
+                    width: size.width * 0.85,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.post_detail_tags.length,
+                        itemBuilder: (context, j) {
+                          return Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[400],
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Text(
+                                widget.post_detail_tags[j]['name'].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold),
+                              ));
 
-  SizedBox(
-              height: 30,
-            ),
-             Row(
-                                    children: [
-                                      Container(
-                                          height: 20,
-                                          width: size.width * 0.85,
-                                          child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: widget.post_detail_tags.length,
-                                              itemBuilder: (context, j) {
-                                                return Container(
-                                                    alignment: Alignment.center,
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 6),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 5,
-                                                            vertical: 0),
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.grey[400],
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15)),
-                                                    child: Text(
-                                                      widget.post_detail_tags[j]['name']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 13),
-                                                    ));
-
-                                                /* Text(
+                          /* Text(
                                                   list[i]['tags'][j]['name']
                                                       .toString(),
                                                   overflow:
@@ -135,12 +166,95 @@ class _Post_DetailState extends State<Post_Detail>
                                                       color: Colors.grey,
                                                       fontSize: 15),
                                                 );*/
-                                              }))
-                                    ],
-                                  )
+                        }))
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+
+             Container(
+            height: size.height*0.5,
+            child: new FutureBuilder(
+                future: databaseHelper.getCommentsPerPosts(widget.post_detail_id),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) print(snapshot.error);
+                  return snapshot.hasData
+                      ? new CommentList(
+                          list: snapshot.data,
+                        )
+                      : new Center(child: new CircularProgressIndicator());
+                }),
+          ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class CommentList extends StatelessWidget {
+  final List list;
+
+  const CommentList({Key key, this.list}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Scrollbar(
+      child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: new ListView.builder(
+              itemCount: list == null ? 0 : list.length,
+              itemBuilder: (context, i) {
+                return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          list[i]['user']['imgProfile'] == null
+                                  ?  Container(
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              color: Colors.teal[300],
+                                              borderRadius:
+                                                  BorderRadius.circular(25)),
+                                          child: Text(list[i]['user']['name'][0]
+                                              .toString()))
+                                  :  Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[400],
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                        ),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            child: Image.network(
+                                              list[i]['user']['imgProfile'],
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
+                          Container(
+                            width: size.width*0.6,
+                            padding: EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5)
+                            ),
+                            
+                            child: Text(list[i]['content'].toString())
+                            ),
+                        ],
+                      ),
+                    ) ;
+              })),
     );
   }
 }
