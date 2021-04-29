@@ -7,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+import 'package:IUT_Project/services/databasehelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreatePost extends StatefulWidget {
   @override
@@ -19,6 +21,11 @@ class _CreatePostState extends State<CreatePost> {
   bool _isLoading = false;
 
   CrudMethods crudMethods = new CrudMethods();
+  SharedPreferences sharedPreferences;
+  DataBaseHelper databaseHelper = new DataBaseHelper();
+  myTag() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -76,11 +83,15 @@ class _CreatePostState extends State<CreatePost> {
     }
   }
 
-  DataBaseHelper databaseHelper = new DataBaseHelper();
 
   final TextEditingController titleController = new TextEditingController();
   final TextEditingController descriptionController =
       new TextEditingController();
+      @override
+  void initState() {
+    myTag();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -92,6 +103,7 @@ class _CreatePostState extends State<CreatePost> {
           onTap: () {
             Navigator.pushReplacementNamed(context, '/home');
           },
+          //https://www.youtube.com/watch?v=8kcNYoaLctI    
           child: Icon(
             Icons.chevron_left_rounded,
             color: Colors.black,
@@ -200,9 +212,70 @@ class _CreatePostState extends State<CreatePost> {
                               desc = val;
                             },
                           ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                           FutureBuilder(
+                  future: databaseHelper.getTags(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ?  new Container(
+                    height: 30,
+                    width: size.width * 0.15,
+                    child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, j) {
+                              return 
+                                  Container(
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.symmetric(horizontal: 6),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 5),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[400],
+                                          borderRadius: BorderRadius.circular(15)),
+                                      child: Text(
+                                        snapshot.data[j]['name'].toString(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,),
+                                      ));
+
+                            }))
+                         
+                        : new Center(child: new CircularProgressIndicator());
+                  }),
                         ],
                       ),
-                    )
+                    ),
+                    /*
+                     Container(
+                    height: 25,
+                    width: size.width * 0.85,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.post_detail_tags.length,
+                        itemBuilder: (context, j) {
+                          return Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 6),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[400],
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Text(
+                                widget.post_detail_tags[j]['name'].toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold),
+                              ));
+
+                        }))
+                     */
                   ],
                 ),
               ),

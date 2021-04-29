@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:IUT_Project/main.dart';
 import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/screens/postDetail.dart';
 import 'package:IUT_Project/services/crud.dart';
@@ -129,16 +130,28 @@ class _HomeState extends State<Home> {
         children: [
           Container(
             height: size.height,
-            child: new FutureBuilder(
-                future: databaseHelper.getPost(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) print(snapshot.error);
-                  return snapshot.hasData
-                      ? new ItemList(
-                          list: snapshot.data,
-                        )
-                      : new Center(child: new CircularProgressIndicator());
-                }),
+            child: RefreshIndicator(
+              onRefresh: () {
+                Navigator.pushReplacement(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (a, b, c) => Home(),
+                    transitionDuration: Duration(seconds: 0),
+                  ),
+                );
+                return Future.value(false);
+              },
+              child: new FutureBuilder(
+                  future: databaseHelper.getPost(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? new ItemList(
+                            list: snapshot.data,
+                          )
+                        : new Center(child: new CircularProgressIndicator());
+                  }),
+            ),
           ),
           Positioned(
               bottom: 0,
@@ -202,7 +215,8 @@ class _HomeState extends State<Home> {
                               // color:Colors.white,
                               icon: Icon(Icons.notifications),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, '/profilePage');
+                                Navigator.pushReplacementNamed(
+                                    context, '/profilePage');
                               }),
                         ],
                       ),
@@ -238,6 +252,7 @@ class ItemList extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: new ListView.builder(
+            physics: BouncingScrollPhysics(),
             itemCount: list == null ? 0 : list.length,
             itemBuilder: (context, i) {
               num += 1;
@@ -388,7 +403,7 @@ class ItemList extends StatelessWidget {
                           height: 1,
                         )
                 ],
-              );  
+              );
             }),
       ),
     );

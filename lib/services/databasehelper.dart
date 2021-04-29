@@ -112,6 +112,31 @@ class DataBaseHelper {
     return data;
   }
 
+  Future<List> getTags() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+
+    String myUrl = "$serverUrl/tags";
+    http.Response response = await http.get(myUrl,
+        headers: {'Accept': "application/json", 'Authorization': '$value'});
+
+    Map<String, dynamic> tags = json.decode(response.body);
+    List<dynamic> data = tags["data"];
+    return data;
+  }
+
+  getMyData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+
+    String myUrl = "$serverUrl/getMyData";
+    http.Response response = await http.get(myUrl, 
+    headers: {'Accept': "application/json", 'Authorization': '$value'});
+    return json.decode(response.body);
+  }
+
   Future<List> getCommentsPerPosts(int id) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
@@ -121,7 +146,7 @@ class DataBaseHelper {
     http.Response response = await http.get(myUrl,
         headers: {'Accept': "application/json", 'Authorization': '$value'});
 
-     Map<String, dynamic> posts = json.decode(response.body);
+    Map<String, dynamic> posts = json.decode(response.body);
     List<dynamic> data = posts["data"];
     return data;
   }
