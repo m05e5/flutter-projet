@@ -19,6 +19,7 @@ class _CreatePostState extends State<CreatePost> {
   String title, desc;
   File selectedImage;
   bool _isLoading = false;
+  List<bool> _isSelected = [];
 
   CrudMethods crudMethods = new CrudMethods();
   SharedPreferences sharedPreferences;
@@ -26,6 +27,7 @@ class _CreatePostState extends State<CreatePost> {
   myTag() async {
     sharedPreferences = await SharedPreferences.getInstance();
   }
+
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -62,7 +64,8 @@ class _CreatePostState extends State<CreatePost> {
         databaseHelper.createPost(titleController.text.trim(),
             descriptionController.text.trim(), downloadUrl);
         Navigator.pushReplacementNamed(context, '/home');
-        print("$titleController---- $descriptionController ------- $downloadUrl");
+        print(
+            "$titleController---- $descriptionController ------- $downloadUrl");
 
         // crudMethods.addData(postMap).then((result) {
         //   Navigator.pushReplacementNamed(context, '/');
@@ -74,24 +77,24 @@ class _CreatePostState extends State<CreatePost> {
       ///uploading image to firebase storage
 
     } else {
-      databaseHelper.createPost(titleController.text.trim(),
-            descriptionController.text.trim());
-        Navigator.pushReplacementNamed(context, '/home');
-        print("$titleController---- $descriptionController");
+      databaseHelper.createPost(
+          titleController.text.trim(), descriptionController.text.trim());
+      Navigator.pushReplacementNamed(context, '/home');
+      print("$titleController---- $descriptionController");
       print(
           "******************************************************************3");
     }
   }
 
-
   final TextEditingController titleController = new TextEditingController();
   final TextEditingController descriptionController =
       new TextEditingController();
-      @override
+  @override
   void initState() {
     myTag();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -99,30 +102,34 @@ class _CreatePostState extends State<CreatePost> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pushReplacementNamed(context, '/home');
-          },
-          //https://www.youtube.com/watch?v=8kcNYoaLctI    
-          child: Icon(
-            Icons.chevron_left_rounded,
-            color: Colors.black,
-          ),
-        ),
+        iconTheme: IconThemeData.fallback(),
+        // leading: InkWell(
+        //   onTap: () {
+        //     Navigator.pushReplacementNamed(context, '/home');
+        //   },
+        //   //https://www.youtube.com/watch?v=8kcNYoaLctI
+        //   child: Icon(
+        //     Icons.chevron_left_rounded,
+        //     color: Colors.black,
+        //   ),
+        // ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "IUT",
-              style: TextStyle(fontSize: 22, color: Colors.black),
+            Container(
+              child: Row(children: [
+                Image.asset(
+                  'assets/IUT2.png',
+                  fit: BoxFit.cover,
+                  width: 25,
+                  height: 25,
+                ),
+                Text(
+                  'GoAsk',
+                  style: TextStyle(color: Colors.black),
+                )
+              ]),
             ),
-            Text(
-              "_Project",
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.blue,
-              ),
-            )
           ],
         ),
         actions: [
@@ -215,15 +222,17 @@ class _CreatePostState extends State<CreatePost> {
                           SizedBox(
                             height: 8,
                           ),
-                           FutureBuilder(
-                  future: databaseHelper.getTags(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) print(snapshot.error);
-                    return snapshot.hasData
-                        ?  new Container(
-                    height: 30,
-                    width: size.width * 0.15,
-                    child: ListView.builder(
+                          FutureBuilder(
+                              future: databaseHelper.getTags(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) print(snapshot.error);
+                                return snapshot.hasData
+                                    ? new Wrap(
+                                        spacing: 5.0,
+                                        runSpacing: 3.0,
+                                        children: getTag(snapshot.data))
+                                    /* child: ListView.builder(
+                      shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: snapshot.data.length,
                             itemBuilder: (context, j) {
@@ -243,10 +252,11 @@ class _CreatePostState extends State<CreatePost> {
                                             fontSize: 15,),
                                       ));
 
-                            }))
-                         
-                        : new Center(child: new CircularProgressIndicator());
-                  }),
+                            })*/
+
+                                    : new Center(
+                                        child: new CircularProgressIndicator());
+                              }),
                         ],
                       ),
                     ),
@@ -282,4 +292,42 @@ class _CreatePostState extends State<CreatePost> {
             ),
     );
   }
+
+  List<int> getTagId(List<dynamic> data) {
+    List<int> ids = [];
+    data.forEach((element) {
+      ids.add(element['id']);
+    });
+  }
+
+  List<FilterChip> getTag(List<dynamic> data) {
+    List<FilterChip> list = [];
+    for (int i = 0; i < data.length; i++) {
+      var e = data[i];
+      if(_isSelected.length < data.length){
+        _isSelected.add(false);
+      }
+      list.add(
+        FilterChip(
+          label: Text(e['name']),
+          labelStyle: TextStyle(
+              color: Colors.black, fontSize: 16.0, fontWeight: FontWeight.bold),
+          backgroundColor: Colors.grey[300],
+          onSelected: (selected) {
+            setState(() {
+              _isSelected[i] = selected;
+            });
+            print(i);
+            print(_isSelected);
+          },
+          selected: _isSelected[i],
+          selectedColor: Colors.teal[300],
+        ),
+      );
+    }
+
+    return list;
+  }
 }
+
+//

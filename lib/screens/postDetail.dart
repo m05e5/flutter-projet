@@ -35,6 +35,7 @@ class _Post_DetailState extends State<Post_Detail>
 
     super.initState();
   }
+
   DataBaseHelper databaseHelper = new DataBaseHelper();
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -47,19 +48,24 @@ class _Post_DetailState extends State<Post_Detail>
         backgroundColor: Colors.grey[200],
         elevation: 0,
         centerTitle: true,
-        title: Container(
-          child: Row(children: [
-            Image.asset(
-              'assets/IUT2.png',
-              fit: BoxFit.cover,
-              width: 25,
-              height: 25,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: Row(children: [
+                Image.asset(
+                  'assets/IUT2.png',
+                  fit: BoxFit.cover,
+                  width: 25,
+                  height: 25,
+                ),
+                Text(
+                  'GoAsk',
+                  style: TextStyle(color: Colors.black),
+                )
+              ]),
             ),
-            Text(
-              'GoAsk',
-              style: TextStyle(color: Colors.black),
-            )
-          ]),
+          ],
         ),
         actions: [],
         leading: null,
@@ -68,8 +74,19 @@ class _Post_DetailState extends State<Post_Detail>
         padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
         child: Column(
           children: [
+            Container(
+              alignment: Alignment.topRight,
+              child: RaisedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/create');
+                },
+                
+                color:Colors.teal[300],
+                child: Text('Ask Question', style: TextStyle(color: Colors.white)),
+              ),
+            ),
             SizedBox(
-              height: 40,
+              height: 10,
             ),
             Text(widget.post_detail_title,
                 style: TextStyle(
@@ -99,15 +116,14 @@ class _Post_DetailState extends State<Post_Detail>
             GestureDetector(
               child: imgval != 'null'
                   ? Container(
-                    
                       height: 200,
                       width: size.width,
                       decoration: BoxDecoration(
                         color: Colors.grey,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      
                       margin: EdgeInsets.symmetric(horizontal: 6),
+                      //: new Center(child: new CircularProgressIndicator());
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
                           child: Image.network(
@@ -156,36 +172,26 @@ class _Post_DetailState extends State<Post_Detail>
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold),
                               ));
-
-                          /* Text(
-                                                  list[i]['tags'][j]['name']
-                                                      .toString(),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 15),
-                                                );*/
                         }))
               ],
             ),
             SizedBox(
               height: 10,
             ),
-
-             Container(
-            height: size.height*0.5,
-            child: new FutureBuilder(
-                future: databaseHelper.getCommentsPerPosts(widget.post_detail_id),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) print(snapshot.error);
-                  return snapshot.hasData
-                      ? new CommentList(
-                          list: snapshot.data,
-                        )
-                      : new Center(child: new CircularProgressIndicator());
-                }),
-          ),
+            Container(
+              height: size.height * 0.5,
+              child: new FutureBuilder(
+                  future:
+                      databaseHelper.getCommentsPerPosts(widget.post_detail_id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) print(snapshot.error);
+                    return snapshot.hasData
+                        ? new CommentList(
+                            list: snapshot.data,
+                          )
+                        : new Center(child: new CircularProgressIndicator());
+                  }),
+            ),
           ],
         ),
       ),
@@ -204,56 +210,49 @@ class CommentList extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: new ListView.builder(
+              physics: BouncingScrollPhysics(),
               itemCount: list == null ? 0 : list.length,
               itemBuilder: (context, i) {
                 return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          list[i]['user']['imgProfile'] == null
-                                  ?  Container(
-                                          alignment: Alignment.center,
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                              color: Colors.teal[300],
-                                              borderRadius:
-                                                  BorderRadius.circular(25)),
-                                          child: Text(list[i]['user']['name'][0]
-                                              .toString()))
-                                  :  Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        height: 40,
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[400],
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                        ),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            child: Image.network(
-                                              list[i]['user']['imgProfile'],
-                                              fit: BoxFit.cover,
-                                            )),
-                                      ),
-                          Container(
-                            width: size.width*0.6,
-                            padding: EdgeInsets.all(5.0),
-                            decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      list[i]['user']['imgProfile'] == null
+                          ? Container(
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.symmetric(horizontal: 6),
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.teal[300],
+                                  borderRadius: BorderRadius.circular(25)),
+                              child:
+                                  Text(list[i]['user']['name'][0].toString()))
+                          : Container(
+                              margin: EdgeInsets.symmetric(horizontal: 6),
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[400],
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: Image.network(
+                                    list[i]['user']['imgProfile'],
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
+                      Container(
+                          width: size.width * 0.6,
+                          padding: EdgeInsets.all(5.0),
+                          decoration: BoxDecoration(
                               color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(5)
-                            ),
-                            
-                            child: Text(list[i]['content'].toString())
-                            ),
-                        ],
-                      ),
-                    ) ;
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Text(list[i]['content'].toString())),
+                    ],
+                  ),
+                );
               })),
     );
   }

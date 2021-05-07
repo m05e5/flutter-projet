@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
                       heightFactor: 0.7,
                       child: FloatingActionButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/create');
+                          Navigator.pushNamed(context, '/create');
                         },
                         backgroundColor: Colors.teal[300],
                         child: Icon(Icons.edit),
@@ -215,8 +215,10 @@ class _HomeState extends State<Home> {
                               // color:Colors.white,
                               icon: Icon(Icons.notifications),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
+                                Navigator.pushNamed(
                                     context, '/profilePage');
+                                // Navigator.pushReplacementNamed(
+                                //     context, '/profilePage');
                               }),
                         ],
                       ),

@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData.fallback(),
-        leading: BackButton(),
+        //leading: BackButton(),
         backgroundColor: Colors.teal[300],
         elevation: 0.0,
       ),
