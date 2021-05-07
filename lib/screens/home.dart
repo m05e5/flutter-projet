@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:object_mapper/object_mapper.dart';
 import 'package:popover/popover.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -192,7 +193,12 @@ class _HomeState extends State<Home> {
                           IconButton(
                               // color:Colors.white,
                               icon: Icon(Icons.search),
-                              onPressed: () {}),
+                              onPressed: () {
+                                Share.share(
+                                    'check out my website https://example.com',
+                                    subject: 'Look what I made!');
+                                Navigator.pop(context);
+                              }),
                           Container(
                             width: size.width * 0.20,
                           ),
@@ -215,8 +221,7 @@ class _HomeState extends State<Home> {
                               // color:Colors.white,
                               icon: Icon(Icons.notifications),
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, '/profilePage');
+                                Navigator.pushNamed(context, '/profilePage');
                                 // Navigator.pushReplacementNamed(
                                 //     context, '/profilePage');
                               }),
