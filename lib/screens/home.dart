@@ -197,7 +197,7 @@ class _HomeState extends State<Home> {
                                 Share.share(
                                     'check out my website https://example.com',
                                     subject: 'Look what I made!');
-                                Navigator.pop(context);
+                                
                               }),
                           Container(
                             width: size.width * 0.20,

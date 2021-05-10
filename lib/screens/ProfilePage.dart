@@ -53,9 +53,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         CustomPaint(
                           child: Container(
                             width: size.width,
-                            height:size.width,
+                            height: size.width,
                           ),
-                          painter:HeaderCurvedContainer(),
+                          painter: HeaderCurvedContainer(),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,8 +86,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                             ),
+                            Text(snapshot.data['data']['name']),
                           ],
                         ),
+
                         // Positioned(
                         //   bottom: 50,
                         //   right: size.width * 0.3,
@@ -101,6 +103,96 @@ class _ProfilePageState extends State<ProfilePage> {
                         //   ),
                         // )
                       ]),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text('Edit profile', style: TextStyle(color: Colors.white)),
+                              style: ButtonStyle(
+                               // padding: EdgeInsets.all(),
+                               padding:MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 30)),
+                                backgroundColor:MaterialStateProperty.all( Colors.teal[300]),
+                                shape:MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  )
+                                )
+                              ),
+                           ),
+                           SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Text(snapshot.data['data']['question_asked']
+                                        .toString(),
+                                         style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                        )),
+                                    Text('Questions',
+                                    style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('|', 
+                                      style: TextStyle(
+                                         fontSize: 20,
+                                      )),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Text(snapshot.data['data']['question_answered'].toString(),
+                                         style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                        )
+                                    ),
+                                    Text('Answers',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('|', 
+                                      style: TextStyle(
+                                         fontSize: 20,
+                                      )),
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Text(snapshot.data['data']['id'].toString(),
+                                     style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                        )),
+                                    Text('Comming',
+                                    style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   )
                 // ? new ItemList(
