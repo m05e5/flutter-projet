@@ -188,15 +188,17 @@ class _HomeState extends State<Home> {
                               // color:Colors.white,
                               icon: Icon(Icons.home),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, '/');
+                              //  Navigator.pushReplacementNamed(context, '/');
+                              Share.share(
+                                    'check out my website https://example.com',
+                                    subject: 'Look what I made!');
+
                               }),
                           IconButton(
                               // color:Colors.white,
                               icon: Icon(Icons.search),
                               onPressed: () {
-                                Share.share(
-                                    'check out my website https://example.com',
-                                    subject: 'Look what I made!');
+                               
                                 
                               }),
                           Container(
@@ -460,6 +462,8 @@ class ListItems extends StatelessWidget {
     );
   }
 }
+
+
 
 class BNBCustomePainter extends CustomPainter {
   @override

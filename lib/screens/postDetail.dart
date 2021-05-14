@@ -193,6 +193,17 @@ class _Post_DetailState extends State<Post_Detail>
                         : new Center(child: new CircularProgressIndicator());
                   }),
             ),
+             Container(
+               alignment: Alignment.topRight,
+               child: RaisedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/create');
+                  },
+                  
+                  color:Colors.teal[300],
+                  child: Text('Answer', style: TextStyle(color: Colors.white)),
+                ),
+             ),
           ],
         ),
       ),
@@ -216,7 +227,7 @@ class CommentList extends StatelessWidget {
               itemCount: list == null ? 0 : list.length,
               itemBuilder: (context, i) {
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 13),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,7 +235,7 @@ class CommentList extends StatelessWidget {
                       list[i]['user']['imgProfile'] == null
                           ? Container(
                               alignment: Alignment.center,
-                              margin: EdgeInsets.symmetric(horizontal: 6),
+                              margin: EdgeInsets.symmetric(horizontal: 4 ),
                               height: 40,
                               width: 40,
                               decoration: BoxDecoration(
@@ -259,22 +270,25 @@ class CommentList extends StatelessWidget {
                               child: Text(list[i]['content'].toString())
                               ),
                                list[i]['imgUrl'] == null
-                          ? Text('No URl')
-                          : Container(
-                              margin: EdgeInsets.symmetric(horizontal: 6),
-                             height: 40,
-                             width: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[400],
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: ClipRRect(
+                          ? SizedBox(width: 2,)
+                          :  Container(
+                                margin: EdgeInsets.symmetric(horizontal: 6),
+                               //height: size.width*0.7,
+                               width: size.width*0.6,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[400],
                                   borderRadius: BorderRadius.circular(25),
-                                  child: Image.network(
-                                    list[i]['imgUrl'],
-                                    fit: BoxFit.fill,
-                                  )),
-                            ),
+                                ),
+                                child: ClipRRect(
+                                   // borderRadius: BorderRadius.circular(25),
+                                    child: InteractiveViewer(
+                                                                          child: Image.network(
+                                        list[i]['imgUrl'],
+                                        fit: BoxFit.fill,
+                                      ),
+                                    )),
+                              ),
+                         
 
                         ],
                       ),

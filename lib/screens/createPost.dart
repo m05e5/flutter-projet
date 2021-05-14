@@ -300,11 +300,13 @@ class _CreatePostState extends State<CreatePost> {
     });
   }
 
+
+
   List<FilterChip> getTag(List<dynamic> data) {
     List<FilterChip> list = [];
     for (int i = 0; i < data.length; i++) {
       var e = data[i];
-      if(_isSelected.length < data.length){
+      if (_isSelected.length < data.length) {
         _isSelected.add(false);
       }
       list.add(
