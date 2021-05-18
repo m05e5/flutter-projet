@@ -7,7 +7,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
-import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreatePost extends StatefulWidget {
@@ -20,6 +19,8 @@ class _CreatePostState extends State<CreatePost> {
   File selectedImage;
   bool _isLoading = false;
   List<bool> _isSelected = [];
+  int numTag;
+  List<int> tChoosed = [];
 
   CrudMethods crudMethods = new CrudMethods();
   SharedPreferences sharedPreferences;
@@ -61,11 +62,24 @@ class _CreatePostState extends State<CreatePost> {
         //   "title": title,
         //   "desc": desc
         // };
-        databaseHelper.createPost(titleController.text.trim(),
+        int data = await databaseHelper.createPost(titleController.text.trim(),
             descriptionController.text.trim(), downloadUrl);
-        Navigator.pushReplacementNamed(context, '/home');
+            print(data);
         print(
             "$titleController---- $descriptionController ------- $downloadUrl");
+        for (int j; j < _isSelected.length; j++) {
+          var v = _isSelected[j];
+          if (v == true) {
+            tChoosed.add(j);
+          } else {
+            print('ya pas');
+          }
+        }
+        for (int k = 0; k < tChoosed.length; k++) {
+          databaseHelper.createPostWithTag(data, tChoosed[k]);
+        }
+
+        Navigator.pushReplacementNamed(context, '/home');
 
         // crudMethods.addData(postMap).then((result) {
         //   Navigator.pushReplacementNamed(context, '/');
@@ -77,12 +91,25 @@ class _CreatePostState extends State<CreatePost> {
       ///uploading image to firebase storage
 
     } else {
-      databaseHelper.createPost(
+      for (int j = 0; j < _isSelected.length; j++) {
+        var v = _isSelected[j];
+        if (v == true) {
+          tChoosed.add(j);
+        }
+      }
+      print(_isSelected);
+      int data = await databaseHelper.createPost(
           titleController.text.trim(), descriptionController.text.trim());
-      Navigator.pushReplacementNamed(context, '/home');
+      print(data);
+
+      for (int k = 0; k < tChoosed.length; k++) {
+        databaseHelper.createPostWithTag(data, tChoosed[k]);
+      }
       print("$titleController---- $descriptionController");
       print(
           "******************************************************************3");
+
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -293,15 +320,6 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 
-  List<int> getTagId(List<dynamic> data) {
-    List<int> ids = [];
-    data.forEach((element) {
-      ids.add(element['id']);
-    });
-  }
-
-
-
   List<FilterChip> getTag(List<dynamic> data) {
     List<FilterChip> list = [];
     for (int i = 0; i < data.length; i++) {
@@ -319,8 +337,8 @@ class _CreatePostState extends State<CreatePost> {
             setState(() {
               _isSelected[i] = selected;
             });
-            print(i);
-            print(_isSelected);
+            // print(i);
+            // print(_isSelected);
           },
           selected: _isSelected[i],
           selectedColor: Colors.teal[300],

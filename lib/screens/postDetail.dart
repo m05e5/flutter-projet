@@ -35,8 +35,7 @@ class _Post_DetailState extends State<Post_Detail>
 
     super.initState();
   }
-
-  DataBaseHelper databaseHelper = new DataBaseHelper();
+DataBaseHelper databaseHelper = new DataBaseHelper();
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     //print("---------------------------------------------------------------------****************************${widget.post_detail_imgUrl}");

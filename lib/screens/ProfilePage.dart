@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 '-------------------------------------------${snapshot.data}');
             return snapshot.hasData
                 ? ListView(
-                    physics: BouncingScrollPhysics(),
+                   // physics: BouncingScrollPhysics(),
                     children: [
                       // Text(snapshot.data['data']['name']),
                       // Text(snapshot.data['data']['imgProfile']),
@@ -69,7 +69,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Colors.white70,
                                       fontWeight: FontWeight.w600)),
                             ),
-                            Container(
+                            snapshot.data['data']['imgProfile'] != null 
+                            ? Container(
                               padding: EdgeInsets.all(10.0),
                               width: size.width * 0.5,
                               height: size.width * 0.5,
@@ -85,6 +86,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                            ) : Container(
+                              padding: EdgeInsets.all(10.0),
+                              width: size.width * 0.5,
+                              height: size.width * 0.5,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.white, width: 5),
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                 ),
+                                 child: Text(snapshot.data['data']['name'][0].toString()),
                             ),
                             Text(snapshot.data['data']['name']),
                           ],
@@ -195,9 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   )
-                // ? new ItemList(
-                //     list: snapshot.data,
-                //   )
+               
                 : new Center(child: new CircularProgressIndicator());
           }),
     );

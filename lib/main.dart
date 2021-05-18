@@ -9,9 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 //import 'package:IUT_Project/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:object_mapper/object_mapper.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
+
 
 void main() async {
   Mappable.factories = {

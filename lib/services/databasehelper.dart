@@ -29,7 +29,7 @@ class DataBaseHelper {
     }
   }
 
-  void createPost(String titleController, String descriptionController,
+  Future<int> createPost(String titleController, String descriptionController,
       [String
           imgUrlController] // the square bracets is to say that the imgUrl is optional
       ) async {
@@ -45,7 +45,27 @@ class DataBaseHelper {
     }, body: {
       "title": "$titleController",
       "description": "$descriptionController",
-      "imgUrl": "$imgUrlController"
+      "imgUrl": "$imgUrlController",
+    });
+
+    var data = json.decode(response.body);
+    var id = data["data"]["id"];
+    return id;
+  }
+
+  void createPostWithTag(int postId, int tagChoosed) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+    print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
+    //String myUrl = "http://192.168.1.36:8000/api/posts/create";
+    final response = await http
+        .post("http://192.168.1.36:8000/api/PostWithTag/create", headers: {
+      'Accept': "application/json",
+      'Authorization': '$value'
+    }, body: {
+      "post_id": "$postId",
+      "tag_id": "$tagChoosed",
     });
 
     status = response.body.contains('error');
@@ -54,8 +74,6 @@ class DataBaseHelper {
 
     if (status) {
       print('data : ${data["error"]}');
-    } else {
-      print('data : ${data["token"]}');
     }
   }
 
@@ -132,8 +150,8 @@ class DataBaseHelper {
     final value = prefs.get(key) ?? 0;
 
     String myUrl = "$serverUrl/getMyData";
-    http.Response response = await http.get(myUrl, 
-    headers: {'Accept': "application/json", 'Authorization': '$value'});
+    http.Response response = await http.get(myUrl,
+        headers: {'Accept': "application/json", 'Authorization': '$value'});
     return json.decode(response.body);
   }
 
@@ -165,3 +183,9 @@ class DataBaseHelper {
     print('read : $token');
   }
 }
+/*
+
+4.1091071,
+9.7675340
+
+ */
