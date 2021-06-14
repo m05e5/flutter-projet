@@ -1,5 +1,6 @@
 import 'package:IUT_Project/screens/ProfilePage.dart';
 import 'package:IUT_Project/screens/createPost.dart';
+import 'package:IUT_Project/screens/editProfile.dart';
 import 'package:IUT_Project/screens/home.dart';
 import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/screens/signup.dart';
@@ -54,6 +55,9 @@ class _MyAppState extends State<MyApp> {
               ),
            "/profilePage": (context) => Scaffold(
                 body: ProfilePage(),
+              ),
+            "/editprofile": (context) => Scaffold(
+                body: EditProfile(),
               ),
               
         },

@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://192.168.1.36:8000/api";
-  String serverUrlPosts = "http://192.168.1.36:8000/api/posts";
+  String serverUrl = "http://192.168.43.45:8000/api";
+  String serverUrlPosts = "http://192.168.43.45:8000/api/posts";
 
   var status;
 
@@ -39,7 +39,7 @@ class DataBaseHelper {
     print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
     //String myUrl = "http://192.168.1.36:8000/api/posts/create";
     final response =
-        await http.post("http://192.168.1.36:8000/api/posts/create", headers: {
+        await http.post("http://192.168.43.45:8000/api/posts/create", headers: {
       'Accept': "application/json",
       'Authorization': '$value'
     }, body: {
@@ -60,7 +60,7 @@ class DataBaseHelper {
     print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
     //String myUrl = "http://192.168.1.36:8000/api/posts/create";
     final response = await http
-        .post("http://192.168.1.36:8000/api/PostWithTag/create", headers: {
+        .post("http://192.168.43.45:8000/api/PostWithTag/create", headers: {
       'Accept': "application/json",
       'Authorization': '$value'
     }, body: {

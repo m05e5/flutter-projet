@@ -57,17 +57,8 @@ class _CreatePostState extends State<CreatePost> {
         var downloadUrl = await (await task).ref.getDownloadURL();
         print("this is url $downloadUrl");
 
-        // Map<String, String> postMap = {
-        //   "imgUrl": downloadUrl,
-        //   "title": title,
-        //   "desc": desc
-        // };
-        int data = await databaseHelper.createPost(titleController.text.trim(),
-            descriptionController.text.trim(), downloadUrl);
-            print(data);
-        print(
-            "$titleController---- $descriptionController ------- $downloadUrl");
-        for (int j; j < _isSelected.length; j++) {
+
+ for (int j = 0; j < _isSelected.length; j++) {
           var v = _isSelected[j];
           if (v == true) {
             tChoosed.add(j);
@@ -75,6 +66,19 @@ class _CreatePostState extends State<CreatePost> {
             print('ya pas');
           }
         }
+        // Map<String, String> postMap = {
+        //   "imgUrl": downloadUrl,
+        //   "title": title,
+        //   "desc": desc
+        // };
+        int data = await databaseHelper.createPost(titleController.text.trim(),
+            descriptionController.text.trim(), downloadUrl);
+        print(data);
+        print(
+            "$titleController---- $descriptionController ------- $downloadUrl");
+        print(_isSelected);
+       
+        print(tChoosed);
         for (int k = 0; k < tChoosed.length; k++) {
           databaseHelper.createPostWithTag(data, tChoosed[k]);
         }

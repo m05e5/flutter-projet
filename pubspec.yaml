@@ -25,9 +25,9 @@ dependencies:
     sdk: flutter
   curved_navigation_bar: ^0.3.7
   #date of my firebase dependencies Jan 12, 2021   
-  firebase_auth: ^0.20.0
+  firebase_auth: ^0.20.1
   firebase_core: ^0.7.0
-  cloud_firestore: ^0.16.0
+  cloud_firestore: ^0.16.0+1
   random_string: ^2.1.0
   firebase_storage: ^7.0.0
   image_picker: ^0.6.7+22
@@ -40,6 +40,12 @@ dependencies:
   dio: ^3.0.10
   flutter_riverpod: ^0.13.0
   flutter_secure_storage: ^3.3.5
+  full_screen_image: any
+
+
+dependency_overrides:
+  # Override path_provider to pick up fixes for FFI changes.
+  path_provider: ^2.0.0-nullsafety.1
 
   
   uuid: ^2.2.0 

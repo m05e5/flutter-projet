@@ -95,7 +95,7 @@ class _HomeState extends State<Home> {
     final value = prefs.get(key) ?? 0;
     print(value);
     final response = await http.get(
-      "http://192.168.1.36:8000/api/posts",
+      "http://192.168.43.45:8000/api/posts",
       headers: {'Accept': "application/json", 'Authorization': '$value'},
     );
 
@@ -110,7 +110,7 @@ class _HomeState extends State<Home> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      /*appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         actions: <Widget>[
@@ -126,7 +126,7 @@ class _HomeState extends State<Home> {
             child: Text("Log Out", style: TextStyle(color: Colors.black)),
           ),
         ],
-      ),*/
+      ),
       body: Stack(
         children: [
           Container(

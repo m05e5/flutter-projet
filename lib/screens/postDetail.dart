@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:full_screen_image/full_screen_image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:object_mapper/object_mapper.dart';
 
 class Post_Detail extends StatefulWidget {
@@ -28,6 +32,7 @@ class Post_Detail extends StatefulWidget {
 
 class _Post_DetailState extends State<Post_Detail>
     with SingleTickerProviderStateMixin {
+  File commentImage;
   TabController _tabController;
   @override
   void initState() {
@@ -35,7 +40,21 @@ class _Post_DetailState extends State<Post_Detail>
 
     super.initState();
   }
-DataBaseHelper databaseHelper = new DataBaseHelper();
+
+  final picker = ImagePicker();
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        commentImage = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  DataBaseHelper databaseHelper = new DataBaseHelper();
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     //print("---------------------------------------------------------------------****************************${widget.post_detail_imgUrl}");
@@ -79,9 +98,9 @@ DataBaseHelper databaseHelper = new DataBaseHelper();
                 onPressed: () {
                   Navigator.pushNamed(context, '/create');
                 },
-                
-                color:Colors.teal[300],
-                child: Text('Ask Question', style: TextStyle(color: Colors.white)),
+                color: Colors.teal[300],
+                child:
+                    Text('Ask Question', style: TextStyle(color: Colors.white)),
               ),
             ),
             SizedBox(
@@ -123,12 +142,20 @@ DataBaseHelper databaseHelper = new DataBaseHelper();
                       ),
                       margin: EdgeInsets.symmetric(horizontal: 6),
                       //: new Center(child: new CircularProgressIndicator());
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Image.network(
-                            widget.post_detail_imgUrl,
-                            fit: BoxFit.cover,
-                          )),
+                      child: FullScreenWidget(
+                        backgroundColor: Colors.grey[200],
+                        child: Center(
+                          child: Hero(
+                            tag: 'smallImage',
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  widget.post_detail_imgUrl,
+                                  fit: BoxFit.cover,
+                                )),
+                          ),
+                        ),
+                      ),
                     )
                   : SizedBox(
                       height: 1,
@@ -178,7 +205,7 @@ DataBaseHelper databaseHelper = new DataBaseHelper();
               height: 10,
             ),
             Container(
-             
+              color: Colors.grey[300],
               height: size.height * 0.5,
               child: new FutureBuilder(
                   future:
@@ -192,24 +219,94 @@ DataBaseHelper databaseHelper = new DataBaseHelper();
                         : new Center(child: new CircularProgressIndicator());
                   }),
             ),
-             Container(
-               alignment: Alignment.topRight,
-               child: RaisedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/create');
-                  },
-                  
-                  color:Colors.teal[300],
-                  child: Text('Answer', style: TextStyle(color: Colors.white)),
-                ),
-             ),
+            Container(
+              alignment: Alignment.topRight,
+              child: RaisedButton(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Answer the question'),
+                          content: Container(
+                            height: size.height * 0.35,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      getImage();
+                                    },
+                                    child: commentImage != null
+                                        ? Container(
+                                            height: 150,
+                                            width: size.width,
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                child: Image.file(
+                                                  commentImage,
+                                                  fit: BoxFit.cover,
+                                                )),
+                                          )
+                                        : Container(
+                                            height: 150,
+                                            decoration: BoxDecoration(
+                                                color: Colors.grey,
+                                                borderRadius:
+                                                    BorderRadius.circular(6)),
+                                            width: size.width,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.add_a_photo),
+                                                Text(
+                                                    'Click here to add a photo')
+                                              ],
+                                            )),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextFormField(
+                                    // controller: descriptionController,
+                                    decoration: InputDecoration(
+                                      hintText: "desc",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    minLines:
+                                        6, // any number you need (It works as the rows for the textarea)
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    // onChanged: (val) {
+                                    //   desc = val;
+                                    // },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        )),
+                color: Colors.teal[300],
+                child: Text('Answer', style: TextStyle(color: Colors.white)),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-  
+
 class CommentList extends StatelessWidget {
   final List list;
 
@@ -221,78 +318,95 @@ class CommentList extends StatelessWidget {
       child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: new ListView.builder(
-            
               physics: BouncingScrollPhysics(),
-              itemCount: list == null ? 0 : list.length,
+              itemCount:  list.length,
               itemBuilder: (context, i) {
+                print(" ----------------------------------5555555555555$list ");
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 13),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      list[i]['user']['imgProfile'] == null
-                          ? Container(
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.symmetric(horizontal: 4 ),
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  color: Colors.teal[300],
-                                  borderRadius: BorderRadius.circular(25)),
-                              child:
-                                  Text(list[i]['user']['name'][0].toString()))
-                          : Container(
-                              margin: EdgeInsets.symmetric(horizontal: 6),
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[400],
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: Image.network(
-                                    list[i]['user']['imgProfile'],
-                                    fit: BoxFit.cover,
-                                  )),
-                            ),
-                      Column(
-                        children: [
-                         
-                          Container(  
-                              width: size.width * 0.6,
-                              padding: EdgeInsets.all(10.0),
-                              decoration: BoxDecoration(
-                              //    color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(list[i]['content'].toString())
-                              ),
-                               list[i]['imgUrl'] == null
-                          ? SizedBox(width: 2,)
-                          :  Container(
-                                margin: EdgeInsets.symmetric(horizontal: 6),
-                               //height: size.width*0.7,
-                               width: size.width*0.6,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[400],
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: ClipRRect(
-                                   // borderRadius: BorderRadius.circular(25),
-                                    child: InteractiveViewer(
-                                                                          child: Image.network(
-                                        list[i]['imgUrl'],
-                                        fit: BoxFit.fill,
+                  child: list == null
+                      ? Container(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Text('No Answer Yet'),
+                              Text('Be the first to answer this question')
+                            ],
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            list[i]['user']['imgProfile'] == null
+                                ? Container(
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.symmetric(horizontal: 4),
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                        color: Colors.teal[300],
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    child: Text(
+                                        list[i]['user']['name'][0].toString()))
+                                : Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 6),
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[400],
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: Image.network(
+                                          list[i]['user']['imgProfile'],
+                                          fit: BoxFit.cover,
+                                        )),
+                                  ),
+                            Column(
+                              children: [
+                                Container(
+                                    width: size.width * 0.6,
+                                    padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                        //    color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Text(list[i]['content'].toString())),
+                                list[i]['imgUrl'] == null
+                                    ? SizedBox(
+                                        width: 2,
+                                      )
+                                    : GestureDetector(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 6),
+                                          //height: size.width*0.7,
+                                          width: size.width * 0.6,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[400],
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                          ),
+                                          child: FullScreenWidget(
+                                            child: Center(
+                                              child: ClipRRect(
+                                                  // borderRadius: BorderRadius.circular(25),
+                                                  child: InteractiveViewer(
+                                                child: Image.network(
+                                                  list[i]['imgUrl'],
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              )),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    )),
-                              ),
-                         
-
-                        ],
-                      ),
-                    ],
-                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                 );
               })),
     );
