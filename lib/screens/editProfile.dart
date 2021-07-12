@@ -50,10 +50,106 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 child: Text('H'),
             ),
-
+        textSection(),
         ],),
+    
         )
       
     );
   }
+  final TextEditingController matriculeController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+  Container textSection() {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.fromLTRB(
+          20, MediaQuery.of(context).size.height * 0.18, 20, 20),
+      child: Column(
+        children: <Widget>[
+          TextFormField(
+            controller: matriculeController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            // style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              labelText: 'Nom',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: "Entrer votre matricule",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              // hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
+          SizedBox(height: 20.0),
+           TextFormField(
+            controller: matriculeController,
+            cursorColor: Colors.white,
+            // initialValue: '18i00933',
+            // style: TextStyle(color: Colors.white70),
+            decoration: InputDecoration(
+              labelText: 'Matricule',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: "Entrer votre matricule",
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              // hintStyle: TextStyle(color: Colors.white70),
+            ),
+          ),
+          SizedBox(height: 20.0),
+          TextFormField(
+            autofocus: false,
+            controller: passwordController,
+            cursorColor: Colors.black,
+            //initialValue: '12345678',
+            obscureText: true,
+            style: TextStyle(color: Colors.black),
+            decoration: InputDecoration(
+              labelText: 'Password',
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: "Entrer votre mot de passe",
+              contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//  Container buttonSection() {
+//     return Container(
+//       width: MediaQuery.of(context).size.width,
+//       height: 40.0,
+//       padding: EdgeInsets.symmetric(horizontal: 20.0),
+//       margin: EdgeInsets.only(top: 15.0),
+//       child: RaisedButton(
+//         focusElevation: 4.0,
+//         highlightElevation: 4.0,
+//         hoverElevation: 4.0,
+//         onPressed:
+//             // matriculeController.text == "" || passwordController.text == ""
+//             //     ? null
+//             //     :
+//             () {
+//           setState(() {
+//             _isLoading = true;
+//           });
+//           signIn(matriculeController.text, passwordController.text);
+//         },
+//         color: Colors.teal[300],
+//         child: Text("Sign In",
+//             style: TextStyle(
+//               color: Colors.white70,
+//             )),
+//         shape:
+//             RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+//       ),
+//     );
+//   }
+
+
 }

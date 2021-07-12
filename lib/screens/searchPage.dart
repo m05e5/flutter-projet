@@ -1,42 +1,65 @@
+import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+SharedPreferences sharedPreferences;
+DataBaseHelper databaseHelper = new DataBaseHelper();
 
+  checkLoginState() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+@override
+  void initState() {
+    checkLoginState();
+    databaseHelper.getPost();
+    initState();
+  }
+  
+  
 class SearchPageState extends SearchDelegate<String> {
   final list = [
-    "sdf0",
-    "sdf1",
-    "sdf2",
-    "sdf3",
-    "sdf4",
-    "sdf5",
-    "sdf6",
-    "sdf7",
-    "qsdqsddfdzg",
-    "qsdqsddfg",
-    "qsdqsd9",
-    "qsdqsd8",
-    "qsdqsd7",
-    "qsdqsd6",
-    "qsdqsd5",
-    "qsdqsd4",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
   ];
 
   final recentlsit = [
-    "qsdqsddfgdg",
-    "qsdqsdtretr",
-    "qsdqsd3",
-    "qsdqsd2",
-    "qsdqsd1",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
   ];
   @override
   List<Widget> buildActions(BuildContext context) {
-    return [IconButton(onPressed: () {}, icon: Icon(Icons.clear))];
+    return [
+      IconButton(
+          onPressed: () {
+            query = "";
+          },
+          icon: Icon(Icons.clear))
+    ];
     throw UnimplementedError();
   }
 
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-        onPressed: () {},
+        onPressed: () {
+          close(context, null);
+        },
         icon: AnimatedIcon(
           icon: AnimatedIcons.menu_arrow,
           progress: transitionAnimation,
@@ -52,10 +75,28 @@ class SearchPageState extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggesionlist = query.isEmpty ? recentlsit : list;
-    return ListView.builder(itemBuilder: (context, index) => ListTile(
-      leading: null,
-    ));
+    final suggesionlist = query.isEmpty
+        ? recentlsit
+        : list.where((element) => element.startsWith(query)).toList();
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
+        onTap: () {
+          showResults(context);
+        },
+        leading: Icon(Icons.search),
+        title: RichText(
+            text: TextSpan(
+                text: suggesionlist[index].substring(0, query.length),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                children: [
+              TextSpan(
+                  text: suggesionlist[index].substring(query.length),
+                  style: TextStyle(color: Colors.grey))
+            ])),
+      ),
+      itemCount: suggesionlist.length,
+    );
     throw UnimplementedError();
   }
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:IUT_Project/main.dart';
 import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/screens/postDetail.dart';
+import 'package:IUT_Project/screens/searchPage.dart';
 import 'package:IUT_Project/services/crud.dart';
 import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,11 +28,11 @@ class _HomeState extends State<Home> {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
+  DataBaseHelper databaseHelper = new DataBaseHelper();
   @override
   void initState() {
     checkLoginState();
     this.databaseHelper.getPost();
-    //this.getPosts();
     super.initState();
   }
 
@@ -39,43 +40,43 @@ class _HomeState extends State<Home> {
   List<Posts> posts = [];
 
   QuerySnapshot postSnapshot;
-  Widget PostList() {
-    Firebase.initializeApp();
-    child:
-    ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, i) {
-        Posts post = posts[i];
-        return Column(
-          children: [
-            Card(
-              elevation: 2,
-              child: FlatButton(
-                padding: EdgeInsets.all(0),
-                onPressed: () {},
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  width: double.infinity,
-                  height: 100,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(post.title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[700])),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        );
-      },
-    );
-  }
+  // Widget PostList() {
+  //   Firebase.initializeApp();
+  //   child:
+  //   ListView.builder(
+  //     itemCount: posts.length,
+  //     itemBuilder: (context, i) {
+  //       Posts post = posts[i];
+  //       return Column(
+  //         children: [
+  //           Card(
+  //             elevation: 2,
+  //             child: FlatButton(
+  //               padding: EdgeInsets.all(0),
+  //               onPressed: () {},
+  //               child: Container(
+  //                 padding: EdgeInsets.all(8),
+  //                 width: double.infinity,
+  //                 height: 100,
+  //                 decoration:
+  //                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(post.title,
+  //                         style: TextStyle(
+  //                             fontWeight: FontWeight.bold,
+  //                             color: Colors.grey[700])),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   // Future<List<Posts>> getPosts() async {
   //   CollectionReference ref =
@@ -88,23 +89,6 @@ class _HomeState extends State<Home> {
   //   print("===========================================${posts.toString()}");
   //   return posts;
   // }
-  DataBaseHelper databaseHelper = new DataBaseHelper();
-  Future<List> getPosts() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final value = prefs.get(key) ?? 0;
-    print(value);
-    final response = await http.get(
-      "http://192.168.43.45:8000/api/posts",
-      headers: {'Accept': "application/json", 'Authorization': '$value'},
-    );
-
-    Map<String, dynamic> posts = json.decode(response.body);
-    List<dynamic> data = posts["data"];
-    print("----------------- $data");
-    return data;
-  }
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -198,8 +182,8 @@ class _HomeState extends State<Home> {
                               // color:Colors.white,
                               icon: Icon(Icons.search),
                               onPressed: () {
-                               
-                                
+                                showSearch(
+                              context: context, delegate: SearchPageState());
                               }),
                           Container(
                             width: size.width * 0.20,

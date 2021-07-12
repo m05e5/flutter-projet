@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:IUT_Project/screens/home.dart';
+import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +15,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  SharedPreferences sharedPreferences;
+  DataBaseHelper databaseHelper = new DataBaseHelper();
+
+  myData() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+
   bool _isLoading = false;
+  @override
+  void initState() {
+    myData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -98,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
         sharedPreferences.setString("token", "Bearer " + jsonResponse['token']);
-        
+
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => Home()),
             (Route<dynamic> route) => false);

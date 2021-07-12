@@ -144,15 +144,17 @@ class _Post_DetailState extends State<Post_Detail>
                       //: new Center(child: new CircularProgressIndicator());
                       child: FullScreenWidget(
                         backgroundColor: Colors.grey[200],
-                        child: Center(
-                          child: Hero(
-                            tag: 'smallImage',
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Image.network(
-                                  widget.post_detail_imgUrl,
-                                  fit: BoxFit.cover,
-                                )),
+                        child: InteractiveViewer(
+                          child: Center(
+                            child: Hero(
+                              tag: 'smallImage',
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Image.network(
+                                    widget.post_detail_imgUrl,
+                                    fit: BoxFit.cover,
+                                  )),
+                            ),
                           ),
                         ),
                       ),
@@ -390,10 +392,10 @@ class CommentList extends StatelessWidget {
                                                 BorderRadius.circular(25),
                                           ),
                                           child: FullScreenWidget(
-                                            child: Center(
-                                              child: ClipRRect(
+                                            child: InteractiveViewer(
+                                              child: Center(
                                                   // borderRadius: BorderRadius.circular(25),
-                                                  child: InteractiveViewer(
+                                                  child: ClipRRect(
                                                 child: Image.network(
                                                   list[i]['imgUrl'],
                                                   fit: BoxFit.fill,
