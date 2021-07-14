@@ -33,12 +33,15 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Colors.teal[300],
         elevation: 0.0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height:size.height*0.05),
-            Container(
+      body: FutureBuilder(
+        future: databaseHelper.getMyData(),
+         builder: (context, snapshot) {
+            if (snapshot.hasError) print(snapshot.error);
+            return snapshot.hasData
+                ? ListView(
+                    children: [
+                       SizedBox(height:size.height*0.05),
+                       Container(
               padding: EdgeInsets.all(10.0),
               width: size.width * 0.5,
               height: size.width * 0.5,
@@ -50,8 +53,11 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 child: Text('H'),
             ),
-        textSection(),
-        ],),
+                    ]
+                    ): new Center(child: new CircularProgressIndicator());
+                    
+            }
+        
     
         )
       
@@ -153,3 +159,16 @@ class _EditProfileState extends State<EditProfile> {
 
 
 }
+
+// Container(
+//               padding: EdgeInsets.all(10.0),
+//               width: size.width * 0.5,
+//               height: size.width * 0.5,
+//               decoration: BoxDecoration(
+//                 border:
+//                     Border.all(color: Colors.white, width: 5),
+//                 shape: BoxShape.circle,
+//                 color: Colors.white,
+//                 ),
+//                 child: Text('H'),
+//             ),
