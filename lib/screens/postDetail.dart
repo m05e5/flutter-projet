@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:object_mapper/object_mapper.dart';
+import 'package:random_string/random_string.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Post_Detail extends StatefulWidget {
   final post_detail_id;
@@ -32,8 +35,12 @@ class Post_Detail extends StatefulWidget {
 
 class _Post_DetailState extends State<Post_Detail>
     with SingleTickerProviderStateMixin {
-  File commentImage;
+  String content;
+  File selectedImage;
+  bool _isLoading = false;
   TabController _tabController;
+  SharedPreferences sharedPreferences;
+
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -47,17 +54,56 @@ class _Post_DetailState extends State<Post_Detail>
 
     setState(() {
       if (pickedFile != null) {
-        commentImage = File(pickedFile.path);
+        selectedImage = File(pickedFile.path);
       } else {
         print('No image selected.');
       }
     });
   }
 
+  uploadComment() async {
+    if (selectedImage != null) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        final Reference firebaseStorageRef = FirebaseStorage.instance
+            .ref()
+            .child("commentsImages")
+            .child("${randomAlphaNumeric(9)}.jpg");
+        final UploadTask task = firebaseStorageRef.putFile(selectedImage);
+        var downloadUrl = await (await task).ref.getDownloadURL();
+        print("this is url $downloadUrl");
+        int data = await databaseHelper.createComment(
+            contentController.text.trim(),
+            widget.post_detail_id.toString(),
+            downloadUrl);
+        print(data);
+        print(" $contentController ------- $downloadUrl");
+        // Navigator.pushReplacementNamed(context, '/home');
+      } catch (e) {
+        print(e);
+      }
+
+      ///uploading image to firebase storage
+
+    } else {
+      int data = await databaseHelper.createComment(
+          contentController.text.trim(), widget.post_detail_id.toString());
+
+      print("$contentController----");
+      print(
+          "******************************************************************3");
+      
+    }
+  }
+
+  final TextEditingController contentController = new TextEditingController();
+
   DataBaseHelper databaseHelper = new DataBaseHelper();
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    //print("---------------------------------------------------------------------****************************${widget.post_detail_imgUrl}");
+    //print("----------------------****************************${widget.post_detail_imgUrl}");
     final imgval = widget.post_detail_imgUrl.toString();
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -149,11 +195,10 @@ class _Post_DetailState extends State<Post_Detail>
                             child: Hero(
                               tag: 'smallImage',
                               child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
                                   child: Image.network(
-                                    widget.post_detail_imgUrl,
-                                    fit: BoxFit.cover,
-                                  )),
+                                widget.post_detail_imgUrl,
+                                fit: BoxFit.cover,
+                              )),
                             ),
                           ),
                         ),
@@ -237,7 +282,7 @@ class _Post_DetailState extends State<Post_Detail>
                                     onTap: () {
                                       getImage();
                                     },
-                                    child: commentImage != null
+                                    child: selectedImage != null
                                         ? Container(
                                             height: 150,
                                             width: size.width,
@@ -245,7 +290,7 @@ class _Post_DetailState extends State<Post_Detail>
                                                 borderRadius:
                                                     BorderRadius.circular(6),
                                                 child: Image.file(
-                                                  commentImage,
+                                                  selectedImage,
                                                   fit: BoxFit.cover,
                                                 )),
                                           )
@@ -270,7 +315,7 @@ class _Post_DetailState extends State<Post_Detail>
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    // controller: descriptionController,
+                                    controller: contentController,
                                     decoration: InputDecoration(
                                       hintText: "desc",
                                       border: OutlineInputBorder(),
@@ -293,7 +338,10 @@ class _Post_DetailState extends State<Post_Detail>
                               child: const Text('Cancel'),
                             ),
                             TextButton(
-                              onPressed: () => Navigator.pop(context, 'OK'),
+                              onPressed: () {
+                                uploadComment();
+                                Navigator.pop(context, null);
+                              },
                               child: const Text('OK'),
                             ),
                           ],
@@ -321,7 +369,7 @@ class CommentList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: new ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount:  list.length,
+              itemCount: list.length,
               itemBuilder: (context, i) {
                 print(" ----------------------------------5555555555555$list ");
                 return Padding(

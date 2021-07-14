@@ -53,6 +53,30 @@ class DataBaseHelper {
     return id;
   }
 
+  Future<int> createComment(String contentController, String postId,
+      [String
+          imgUrlController] // the square bracets is to say that the imgUrl is optional
+      ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+    print("-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* $value");
+    //String myUrl = "http://192.168.1.36:8000/api/posts/create";
+    final response = await http
+        .post("http://192.168.43.45:8000/api/comments/create", headers: {
+      'Accept': "application/json",
+      'Authorization': '$value'
+    }, body: {
+      "content": "$contentController",
+      "post_id": "$postId",
+      "imgUrl": "$imgUrlController"
+    });
+
+    var data = json.decode(response.body);
+    var id = data["data"]["id"];
+    return id;
+  }
+
   void createPostWithTag(int postId, int tagChoosed) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';

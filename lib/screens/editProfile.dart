@@ -1,3 +1,4 @@
+import 'package:IUT_Project/screens/login.dart';
 import 'package:IUT_Project/services/databasehelper.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +32,19 @@ class _EditProfileState extends State<EditProfile> {
         iconTheme: IconThemeData.fallback(),
         //leading: BackButton(),
         backgroundColor: Colors.teal[300],
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              sharedPreferences.clear();
+              sharedPreferences.commit();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage()),
+                  (Route<dynamic> route) => false);
+            },
+            child: Text("Log Out", style: TextStyle(color: Colors.black)),
+          ),
+        ],
         elevation: 0.0,
       ),
       body: FutureBuilder(

@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 '-------------------------------------------${snapshot.data}');
             return snapshot.hasData
                 ? ListView(
-                   // physics: BouncingScrollPhysics(),
+                    // physics: BouncingScrollPhysics(),
                     children: [
                       // Text(snapshot.data['data']['name']),
                       // Text(snapshot.data['data']['imgProfile']),
@@ -69,36 +69,42 @@ class _ProfilePageState extends State<ProfilePage> {
                                       color: Colors.white70,
                                       fontWeight: FontWeight.w600)),
                             ),
-                            snapshot.data['data']['imgProfile'] != null 
-                            ? Container(
-                              padding: EdgeInsets.all(10.0),
-                              width: size.width * 0.5,
-                              height: size.width * 0.5,
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 5),
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    snapshot.data['data']['imgProfile'],
+                            snapshot.data['data']['imgProfile'] != null
+                                ? Container(
+                                    padding: EdgeInsets.all(10.0),
+                                    width: size.width * 0.5,
+                                    height: size.width * 0.5,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.white, width: 5),
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          snapshot.data['data']['imgProfile'],
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    padding: EdgeInsets.all(10.0),
+                                    width: size.width * 0.5,
+                                    height: size.width * 0.5,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.white, width: 5),
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    child: Text(snapshot.data['data']['name'][0]
+                                        .toString()),
                                   ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ) : Container(
-                              padding: EdgeInsets.all(10.0),
-                              width: size.width * 0.5,
-                              height: size.width * 0.5,
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.white, width: 5),
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                 ),
-                                 child: Text(snapshot.data['data']['name'][0].toString()),
-                            ),
-                            Text(snapshot.data['data']['name']),
+                            Text(snapshot.data['data']['name'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                )),
                           ],
                         ),
 
@@ -118,38 +124,42 @@ class _ProfilePageState extends State<ProfilePage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          
-                            ElevatedButton(
-                              onPressed: () {
-                                 Navigator.pushNamed(context, '/editprofile');
-                              },
-                              child: Text('Edit profile', style: TextStyle(color: Colors.white)),
-                              style: ButtonStyle(
-                               // padding: EdgeInsets.all(),
-                               padding:MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 30)),
-                                backgroundColor:MaterialStateProperty.all( Colors.teal[300]),
-                                shape:MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  )
-                                )
-                              ),
-                           ),
-                           SizedBox(height: 10,),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/editprofile');
+                            },
+                            child: Text('Edit profile',
+                                style: TextStyle(color: Colors.white)),
+                            style: ButtonStyle(
+                                // padding: EdgeInsets.all(),
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.symmetric(horizontal: 30)),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.teal[300]),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ))),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 child: Column(
                                   children: [
-                                    Text(snapshot.data['data']['question_asked']
-                                        .toString(),
-                                         style: TextStyle(
+                                    Text(
+                                        snapshot.data['data']['question_asked']
+                                            .toString(),
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         )),
                                     Text('Questions',
-                                    style: TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 13,
                                         )),
@@ -157,21 +167,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('|', 
-                                      style: TextStyle(
-                                         fontSize: 20,
-                                      )),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('|',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    )),
                               ),
                               Container(
                                 child: Column(
                                   children: [
-                                    Text(snapshot.data['data']['question_answered'].toString(),
-                                         style: TextStyle(
+                                    Text(
+                                        snapshot.data['data']
+                                                ['question_answered']
+                                            .toString(),
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
-                                        )
-                                    ),
+                                        )),
                                     Text('Answers',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -181,22 +194,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('|', 
-                                      style: TextStyle(
-                                         fontSize: 20,
-                                      )),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('|',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    )),
                               ),
                               Container(
                                 child: Column(
                                   children: [
-                                    Text(snapshot.data['data']['id'].toString(),
-                                     style: TextStyle(
+                                    Text(snapshot.data['data']['level'].toString(),
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 25,
                                         )),
-                                    Text('Comming',
-                                    style: TextStyle(
+                                    Text('Level',
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 13,
                                         )),
@@ -209,7 +223,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   )
-               
                 : new Center(child: new CircularProgressIndicator());
           }),
     );

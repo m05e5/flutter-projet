@@ -17,14 +17,14 @@ DataBaseHelper databaseHelper = new DataBaseHelper();
   
 class SearchPageState extends SearchDelegate<String> {
   final list = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
+    "Flutter",
+    "PHP",
+    "DataBase",
+    "Authomatisme",
+    "Math",
+    "Algebre numerique",
     "seven",
-    "eight",
+    "Electronique",
     "nine",
     "ten",
     "eleven",
@@ -36,11 +36,11 @@ class SearchPageState extends SearchDelegate<String> {
   ];
 
   final recentlsit = [
-    "seven",
-    "eight",
-    "nine",
-    "ten",
-    "eleven",
+    "PHP",
+    "DataBase",
+    "Authomatisme",
+    "Math",
+    "Algebre numerique",
   ];
   @override
   List<Widget> buildActions(BuildContext context) {

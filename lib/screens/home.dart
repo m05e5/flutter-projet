@@ -94,23 +94,7 @@ class _HomeState extends State<Home> {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              sharedPreferences.clear();
-              sharedPreferences.commit();
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage()),
-                  (Route<dynamic> route) => false);
-            },
-            child: Text("Log Out", style: TextStyle(color: Colors.black)),
-          ),
-        ],
-      ),
+
       body: Stack(
         children: [
           Container(
@@ -205,7 +189,7 @@ class _HomeState extends State<Home> {
                               }),
                           IconButton(
                               // color:Colors.white,
-                              icon: Icon(Icons.notifications),
+                              icon: Icon(Icons.account_circle),
                               onPressed: () {
                                 Navigator.pushNamed(context, '/profilePage');
                                 // Navigator.pushReplacementNamed(
