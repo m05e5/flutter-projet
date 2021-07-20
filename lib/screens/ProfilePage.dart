@@ -1,3 +1,4 @@
+import 'package:IUT_Project/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,19 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData.fallback(),
-        //leading: BackButton(),
+         actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              sharedPreferences.clear();
+              sharedPreferences.commit();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => LoginPage()),
+                  (Route<dynamic> route) => false);
+            },
+            child: Text("Log Out", style: TextStyle(color: Colors.black)),
+          ),
+        ],
         backgroundColor: Colors.teal[300],
         elevation: 0.0,
       ),

@@ -70,6 +70,8 @@ class DataBaseHelper {
       "content": "$contentController",
       "post_id": "$postId",
       "imgUrl": "$imgUrlController"
+    }).catchError((e) {
+      print('httpError: $e');
     });
 
     var data = json.decode(response.body);

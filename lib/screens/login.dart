@@ -38,13 +38,13 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.white,
-        leading: GestureDetector(
-            onTap: () {
-              setState(() {
-                _isLoading = false;
-              });
-            },
-            child: Icon(Icons.arrow_back_ios_rounded, color: Colors.black)),
+        // leading: GestureDetector(
+        //     onTap: () {
+        //       setState(() {
+        //         _isLoading = false;
+        //       });
+        //     },
+        //     child: Icon(Icons.arrow_back_ios_rounded, color: Colors.black)),
         centerTitle: true,
         title: Text('Sign in', style: TextStyle(color: Colors.black)),
         actions: [],
@@ -163,12 +163,12 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.fromLTRB(
-          20, MediaQuery.of(context).size.height * 0.18, 20, 20),
+          20, MediaQuery.of(context).size.height * 0.06, 20, 20),
       child: Column(
         children: <Widget>[
           TextFormField(
             controller: matriculeController,
-            cursorColor: Colors.white,
+            cursorColor: Colors.black,
             // initialValue: '18i00933',
             // style: TextStyle(color: Colors.white70),
             decoration: InputDecoration(
@@ -211,19 +211,36 @@ class _LoginPageState extends State<LoginPage> {
       // padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
       child: Column(
         children: [
-          Text("Welcome",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 35.0,
-                  fontWeight: FontWeight.bold)),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Text(
-                "Pour vous loger vous avez besoin de votre matricule d'etudiant",
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Image.asset(
+                'assets/IUT2.png',
+                fit: BoxFit.cover,
+                width: 60,
+                height: 60,
+              ),
+              Text(
+                'GoAsk',
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.0,
-                )),
+                    color: Colors.black,
+                    fontSize: 45.0,
+                    fontWeight: FontWeight.bold),
+              )
+            ]),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(25, 10, 25, 0),
+            child: Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Text(
+                  "Pour vous identifier vous avez besoin de votre matricule d'etudiant",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.0,
+                  )),
+            ),
           ),
         ],
       ),
